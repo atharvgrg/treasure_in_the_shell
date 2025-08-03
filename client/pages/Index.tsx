@@ -36,6 +36,10 @@ export default function Index() {
         }),
       });
 
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const result = await response.json();
       setSubmission(result);
 
@@ -43,9 +47,10 @@ export default function Index() {
         setPassword("");
       }
     } catch (error) {
+      console.error("Submission error:", error);
       setSubmission({
         success: false,
-        message: "Connection error. Please try again.",
+        message: "Connection error. Please check your internet connection and try again.",
       });
     } finally {
       setIsSubmitting(false);
