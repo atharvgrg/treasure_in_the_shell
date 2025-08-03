@@ -122,6 +122,7 @@ export default function Admin() {
 
       if (result.success) {
         setProgressData([]);
+        setFeedbackData([]);
         setLastUpdated(new Date());
       }
     } catch (error) {
