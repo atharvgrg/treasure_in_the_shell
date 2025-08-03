@@ -21,6 +21,7 @@ export default function Admin() {
   const [progressData, setProgressData] = useState<TeamProgress[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [isResetting, setIsResetting] = useState(false);
 
   const fetchProgress = async () => {
     setIsLoading(true);
