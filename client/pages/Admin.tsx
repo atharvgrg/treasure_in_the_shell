@@ -74,12 +74,27 @@ export default function Admin() {
   const fetchProgress = async () => {
     setIsLoading(true);
     try {
+      // Add cache busting to ensure fresh data
+      const timestamp = Date.now();
       const [progressResponse, feedbackResponse] = await Promise.all([
-        fetch("/api/team-progress"),
-        fetch("/api/feedback"),
+        fetch(`/api/team-progress?t=${timestamp}`, {
+          cache: 'no-cache',
+          headers: {
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache'
+          }
+        }),
+        fetch(`/api/feedback?t=${timestamp}`, {
+          cache: 'no-cache',
+          headers: {
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache'
+          }
+        }),
       ]);
 
       if (!progressResponse.ok || !feedbackResponse.ok) {
+        console.error(`API Error - Progress: ${progressResponse.status}, Feedback: ${feedbackResponse.status}`);
         throw new Error(
           `HTTP error! status: ${progressResponse.status} or ${feedbackResponse.status}`,
         );
@@ -90,11 +105,15 @@ export default function Admin() {
         feedbackResponse.json() as Promise<FeedbackData>,
       ]);
 
+      console.log("Fetched progress data:", progressData);
+      console.log("Fetched feedback data:", feedbackData);
+
       if (progressData.success) {
         const teamsWithDates = progressData.teams.map((team) => ({
           ...team,
           timestamp: new Date(team.timestamp),
         }));
+        console.log("Setting progress data:", teamsWithDates);
         setProgressData(teamsWithDates);
       }
 
@@ -103,6 +122,7 @@ export default function Admin() {
           ...feedback,
           timestamp: new Date(feedback.timestamp),
         }));
+        console.log("Setting feedback data:", feedbacksWithDates);
         setFeedbackData(feedbacksWithDates);
       }
 
