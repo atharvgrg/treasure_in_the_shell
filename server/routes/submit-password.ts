@@ -15,16 +15,16 @@ const submitFeedbackSchema = z.object({
 
 // Password to level mapping - ALL KEYS MUST BE QUOTED STRINGS
 const LEVEL_PASSWORDS: Record<string, number> = {
-  "ZjLjTmM6FvvyRnrb2rfNWOZOTa6ip5If": 1,
+  ZjLjTmM6FvvyRnrb2rfNWOZOTa6ip5If: 1,
   "263JGJPfgU6LtdEvgfWU1XP5yac29mFx": 2,
-  "MNk8KNH3Usiio41PRUEoDFPqfxLPlSmx": 3,
+  MNk8KNH3Usiio41PRUEoDFPqfxLPlSmx: 3,
   "2WmrDFRmJIq3IPxneAaMGhap0pFhF3NJ": 4,
   "4oQYVPkxZOOEOO5pTW81FB8j8lxXGUQw": 5,
-  "HWasnPhtq9AVKe0dmk45nxy20cvUa6EG": 6,
-  "morbNTDkSW6jIlUc0ymOdMaLnOlFVAaj": 7,
-  "dfwvzFQi4mU0wfNbFOe9RoWskMLg7eEc": 8,
+  HWasnPhtq9AVKe0dmk45nxy20cvUa6EG: 6,
+  morbNTDkSW6jIlUc0ymOdMaLnOlFVAaj: 7,
+  dfwvzFQi4mU0wfNbFOe9RoWskMLg7eEc: 8,
   "4CKMh1JI91bUIZZPXDqGanal4xvAg0JM": 9,
-  "FGUW5ilLVJrxX9kMYMmlN4MgbpfMiqey": 10,
+  FGUW5ilLVJrxX9kMYMmlN4MgbpfMiqey: 10,
 };
 
 interface TeamSubmission {
@@ -56,10 +56,13 @@ export const handleSubmitPassword: RequestHandler = (req, res) => {
     // Validate password exists in our level mapping
     const level = LEVEL_PASSWORDS[password];
     if (!level) {
-      console.log(`❌ INVALID PASSWORD: ${password.substring(0, 10)}... from team: ${teamName}`);
+      console.log(
+        `❌ INVALID PASSWORD: ${password.substring(0, 10)}... from team: ${teamName}`,
+      );
       return res.json({
         success: false,
-        message: "Invalid password. Please check your submission and try again.",
+        message:
+          "Invalid password. Please check your submission and try again.",
       });
     }
 
@@ -77,11 +80,16 @@ export const handleSubmitPassword: RequestHandler = (req, res) => {
     teamSubmissions.push(newSubmission);
 
     // Sort by timestamp descending (newest first)
-    teamSubmissions.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+    teamSubmissions.sort(
+      (a, b) => b.timestamp.getTime() - a.timestamp.getTime(),
+    );
 
     console.log(`✅ ADDED: ${teamName} completed level ${level}`);
     console.log(`📊 TOTAL ENTRIES: ${teamSubmissions.length}`);
-    console.log(`📋 ALL SUBMISSIONS:`, teamSubmissions.map(s => `${s.teamName}-L${s.level}`));
+    console.log(
+      `📋 ALL SUBMISSIONS:`,
+      teamSubmissions.map((s) => `${s.teamName}-L${s.level}`),
+    );
 
     const messages = [
       "Password accepted! Great work cracking the shell!",
@@ -114,7 +122,9 @@ export const handleSubmitPassword: RequestHandler = (req, res) => {
 };
 
 export const getTeamProgress: RequestHandler = (req, res) => {
-  console.log(`\n📊 PROGRESS REQUEST - Current entries: ${teamSubmissions.length}`);
+  console.log(
+    `\n📊 PROGRESS REQUEST - Current entries: ${teamSubmissions.length}`,
+  );
 
   try {
     const progressData = teamSubmissions.map((submission, index) => ({
@@ -126,7 +136,10 @@ export const getTeamProgress: RequestHandler = (req, res) => {
     }));
 
     console.log(`📤 SENDING ${progressData.length} progress entries`);
-    console.log(`📋 ENTRIES:`, progressData.map(p => `${p.teamName}-L${p.level}`));
+    console.log(
+      `📋 ENTRIES:`,
+      progressData.map((p) => `${p.teamName}-L${p.level}`),
+    );
 
     res.json({
       success: true,
@@ -147,7 +160,9 @@ export const submitFeedback: RequestHandler = (req, res) => {
   console.log(`\n=== NEW FEEDBACK ===`);
 
   try {
-    const { teamName, password, rating, comments } = submitFeedbackSchema.parse(req.body);
+    const { teamName, password, rating, comments } = submitFeedbackSchema.parse(
+      req.body,
+    );
 
     // Validate password
     const level = LEVEL_PASSWORDS[password];
@@ -174,13 +189,19 @@ export const submitFeedback: RequestHandler = (req, res) => {
     // Sort by timestamp descending
     teamFeedbacks.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
 
-    console.log(`✅ FEEDBACK ADDED: ${teamName} gave ${rating}/5 stars for level ${level}`);
+    console.log(
+      `✅ FEEDBACK ADDED: ${teamName} gave ${rating}/5 stars for level ${level}`,
+    );
     console.log(`📊 TOTAL FEEDBACK ENTRIES: ${teamFeedbacks.length}`);
-    console.log(`📋 ALL FEEDBACK:`, teamFeedbacks.map(f => `${f.teamName}-L${f.level}-${f.rating}★`));
+    console.log(
+      `📋 ALL FEEDBACK:`,
+      teamFeedbacks.map((f) => `${f.teamName}-L${f.level}-${f.rating}★`),
+    );
 
     res.json({
       success: true,
-      message: "Thank you for your feedback! Your input helps us improve the event.",
+      message:
+        "Thank you for your feedback! Your input helps us improve the event.",
     });
   } catch (error) {
     console.error("❌ FEEDBACK ERROR:", error);
@@ -200,7 +221,9 @@ export const submitFeedback: RequestHandler = (req, res) => {
 };
 
 export const getFeedback: RequestHandler = (req, res) => {
-  console.log(`\n📊 FEEDBACK REQUEST - Current entries: ${teamFeedbacks.length}`);
+  console.log(
+    `\n📊 FEEDBACK REQUEST - Current entries: ${teamFeedbacks.length}`,
+  );
 
   try {
     const feedbackData = teamFeedbacks.map((feedback, index) => ({
@@ -214,7 +237,10 @@ export const getFeedback: RequestHandler = (req, res) => {
     }));
 
     console.log(`📤 SENDING ${feedbackData.length} feedback entries`);
-    console.log(`📋 ENTRIES:`, feedbackData.map(f => `${f.teamName}-L${f.level}-${f.rating}★`));
+    console.log(
+      `📋 ENTRIES:`,
+      feedbackData.map((f) => `${f.teamName}-L${f.level}-${f.rating}★`),
+    );
 
     res.json({
       success: true,
