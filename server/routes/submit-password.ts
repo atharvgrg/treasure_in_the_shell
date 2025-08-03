@@ -48,66 +48,40 @@ let teamSubmissions: TeamSubmission[] = [];
 let teamFeedbacks: TeamFeedback[] = [];
 
 export const handleSubmitPassword: RequestHandler = (req, res) => {
-  console.log(`\n=== PASSWORD SUBMISSION START ===`);
-  console.log(`Total submissions before: ${teamSubmissions.length}`);
+  console.log(`\n=== NEW SUBMISSION ===`);
 
   try {
     const { teamName, password } = submitPasswordSchema.parse(req.body);
-    console.log(`Team: ${teamName}, Password: ${password.substring(0, 8)}...`);
 
-    // Find the level for this password
-    const level = LEVEL_PASSWORDS[password as keyof typeof LEVEL_PASSWORDS];
-
+    // Validate password exists in our level mapping
+    const level = LEVEL_PASSWORDS[password];
     if (!level) {
-      console.log(`Invalid password attempt by team: ${teamName}`);
+      console.log(`❌ INVALID PASSWORD: ${password.substring(0, 10)}... from team: ${teamName}`);
       return res.json({
         success: false,
-        message:
-          "Invalid password. Please check your submission and try again.",
+        message: "Invalid password. Please check your submission and try again.",
       });
     }
 
-    // Check if this exact team+level combination already exists
-    const existingSubmission = teamSubmissions.find(
-      (s) =>
-        s.teamName.toLowerCase() === teamName.toLowerCase() &&
-        s.level === level,
-    );
+    // Create unique ID for this submission
+    const submissionId = `${teamName.toLowerCase()}_${level}_${Date.now()}`;
 
-    if (existingSubmission) {
-      console.log(
-        `Team ${teamName} already submitted level ${level}, updating timestamp`,
-      );
-      existingSubmission.timestamp = new Date();
-      existingSubmission.password = password;
-    } else {
-      console.log(
-        `Team ${teamName} completed level ${level} - adding new entry`,
-      );
-      teamSubmissions.push({
-        teamName,
-        level,
-        timestamp: new Date(),
-        password,
-      });
-    }
+    // ALWAYS ADD NEW ENTRY - never update existing ones
+    const newSubmission: TeamSubmission = {
+      teamName,
+      level,
+      timestamp: new Date(),
+      password,
+    };
 
-    // Sort by level descending for leaderboard
-    teamSubmissions.sort(
-      (a, b) =>
-        b.level - a.level || a.timestamp.getTime() - b.timestamp.getTime(),
-    );
+    teamSubmissions.push(newSubmission);
 
-    console.log(`Total submissions after: ${teamSubmissions.length}`);
-    console.log(
-      `All current submissions:`,
-      teamSubmissions.map((s) => ({
-        team: s.teamName,
-        level: s.level,
-        time: s.timestamp.toISOString(),
-      })),
-    );
-    console.log(`=== PASSWORD SUBMISSION END ===\n`);
+    // Sort by timestamp descending (newest first)
+    teamSubmissions.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+
+    console.log(`✅ ADDED: ${teamName} completed level ${level}`);
+    console.log(`📊 TOTAL ENTRIES: ${teamSubmissions.length}`);
+    console.log(`📋 ALL SUBMISSIONS:`, teamSubmissions.map(s => `${s.teamName}-L${s.level}`));
 
     const messages = [
       "Password accepted! Great work cracking the shell!",
@@ -117,23 +91,21 @@ export const handleSubmitPassword: RequestHandler = (req, res) => {
       "Breakthrough achieved! Keep pushing forward!",
     ];
 
-    const response = {
+    res.json({
       success: true,
       level,
       message: `${messages[Math.floor(Math.random() * messages.length)]} Level ${level} completed.`,
-    };
-
-    res.json(response);
+    });
   } catch (error) {
+    console.error("❌ SUBMISSION ERROR:", error);
+
     if (error instanceof z.ZodError) {
-      console.error("Password submission validation error:", error.errors);
       return res.status(400).json({
         success: false,
         message: "Invalid input. Please check your team name and password.",
       });
     }
 
-    console.error("Submit password error:", error);
     res.status(500).json({
       success: false,
       message: "Server error. Please try again later.",
