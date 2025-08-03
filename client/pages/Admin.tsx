@@ -53,6 +53,11 @@ export default function Admin() {
     setIsLoading(true);
     try {
       const response = await fetch("/api/team-progress");
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const data: ProgressData = await response.json();
 
       if (data.success) {
