@@ -6,6 +6,13 @@ const submitPasswordSchema = z.object({
   password: z.string().min(1),
 });
 
+const submitFeedbackSchema = z.object({
+  teamName: z.string().min(1).max(50),
+  password: z.string().min(1),
+  rating: z.number().min(1).max(5),
+  comments: z.string().optional(),
+});
+
 // Password to level mapping
 const LEVEL_PASSWORDS = {
   ZjLjTmM6FvvyRnrb2rfNWOZOTa6ip5If: 1,
