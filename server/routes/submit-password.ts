@@ -48,8 +48,12 @@ let teamSubmissions: TeamSubmission[] = [];
 let teamFeedbacks: TeamFeedback[] = [];
 
 export const handleSubmitPassword: RequestHandler = (req, res) => {
+  console.log(`\n=== PASSWORD SUBMISSION START ===`);
+  console.log(`Total submissions before: ${teamSubmissions.length}`);
+
   try {
     const { teamName, password } = submitPasswordSchema.parse(req.body);
+    console.log(`Team: ${teamName}, Password: ${password.substring(0, 8)}...`);
 
     // Find the level for this password
     const level = LEVEL_PASSWORDS[password as keyof typeof LEVEL_PASSWORDS];
