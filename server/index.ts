@@ -6,6 +6,8 @@ import {
   handleSubmitPassword,
   getTeamProgress,
   resetProgress,
+  submitFeedback,
+  getFeedback,
 } from "./routes/submit-password";
 
 export function createServer() {
