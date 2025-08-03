@@ -155,10 +155,14 @@ export const getTeamProgress: RequestHandler = (req, res) => {
 };
 
 export const submitFeedback: RequestHandler = (req, res) => {
+  console.log(`\n=== FEEDBACK SUBMISSION START ===`);
+  console.log(`Total feedbacks before: ${teamFeedbacks.length}`);
+
   try {
     const { teamName, password, rating, comments } = submitFeedbackSchema.parse(
       req.body,
     );
+    console.log(`Team: ${teamName}, Rating: ${rating}, Level password: ${password.substring(0, 8)}...`);
 
     // Find the level for this password
     const level = LEVEL_PASSWORDS[password as keyof typeof LEVEL_PASSWORDS];
