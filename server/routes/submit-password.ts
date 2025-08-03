@@ -125,3 +125,23 @@ export const getTeamProgress: RequestHandler = (req, res) => {
     });
   }
 };
+
+export const resetProgress: RequestHandler = (req, res) => {
+  try {
+    // Clear all team submissions
+    teamSubmissions.length = 0;
+
+    console.log('All team progress has been reset');
+
+    res.json({
+      success: true,
+      message: 'All team progress has been successfully reset.'
+    });
+  } catch (error) {
+    console.error('Reset progress error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error. Failed to reset progress.'
+    });
+  }
+};
