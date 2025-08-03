@@ -130,14 +130,6 @@ export const handleSubmitPassword: RequestHandler = (req, res) => {
 };
 
 export const getTeamProgress: RequestHandler = (req, res) => {
-  console.log("=== GET TEAM PROGRESS REQUEST ===");
-  console.log("Current teamSubmissions count:", teamSubmissions.length);
-  console.log("Team submissions data:", teamSubmissions.map(t => ({
-    name: t.teamName,
-    level: t.level,
-    timestamp: t.timestamp.toISOString()
-  })));
-
   try {
     const progressData = teamSubmissions.map((submission) => ({
       teamName: submission.teamName,
@@ -146,8 +138,6 @@ export const getTeamProgress: RequestHandler = (req, res) => {
       // Don't expose actual passwords in the response
       hasPassword: !!submission.password,
     }));
-
-    console.log("Returning progress data:", progressData);
 
     res.json({
       success: true,
