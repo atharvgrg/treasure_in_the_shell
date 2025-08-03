@@ -108,6 +108,25 @@ export default function Index() {
     }
   };
 
+  const StarRating = ({ rating, onRatingChange }: { rating: number; onRatingChange: (rating: number) => void }) => {
+    return (
+      <div className="flex gap-1">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <button
+            key={star}
+            type="button"
+            onClick={() => onRatingChange(star)}
+            className={`p-1 transition-colors ${
+              star <= rating ? "text-yellow-500" : "text-muted-foreground hover:text-yellow-400"
+            }`}
+          >
+            <Star className="h-6 w-6 fill-current" />
+          </button>
+        ))}
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background to-secondary relative overflow-hidden">
       {/* Matrix-style background pattern */}
