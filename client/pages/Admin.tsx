@@ -352,6 +352,16 @@ export default function Admin() {
       </header>
 
       <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
+        {/* Live Status Indicator */}
+        <div className="text-center mb-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 rounded-full border border-primary/20">
+            <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+            <span className="text-xs font-mono text-primary">
+              LIVE: {progressData.length} submissions • {feedbackData.length} feedback entries
+            </span>
+          </div>
+        </div>
+
         {/* Tab Navigation */}
         <div className="flex justify-center mb-6">
           <div className="bg-card/50 rounded-lg p-1 border border-border">
@@ -363,7 +373,7 @@ export default function Admin() {
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              Team Progress
+              Team Progress ({progressData.length})
             </button>
             <button
               onClick={() => setActiveTab("feedback")}
@@ -373,7 +383,7 @@ export default function Admin() {
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              Feedback ({stats.totalFeedbacks})
+              Feedback ({feedbackData.length})
             </button>
           </div>
         </div>
