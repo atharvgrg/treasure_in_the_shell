@@ -253,21 +253,25 @@ export default function Admin() {
               {lastUpdated && (
                 <div className="text-xs text-muted-foreground font-mono hidden lg:block">
                   Last updated: {lastUpdated.toLocaleTimeString()}
+                  {isLoading && <span className="text-primary ml-2">• Refreshing...</span>}
                 </div>
               )}
+              <div className="text-xs text-muted-foreground font-mono lg:hidden">
+                {isLoading && <span className="text-primary">Refreshing...</span>}
+              </div>
               <Button
                 onClick={fetchProgress}
                 disabled={isLoading}
                 variant="outline"
                 size="sm"
-                className="font-mono text-xs sm:text-sm"
+                className={`font-mono text-xs sm:text-sm ${isLoading ? 'bg-primary/10' : ''}`}
               >
                 {isLoading ? (
                   <RefreshCw className="h-3 w-3 sm:h-4 sm:w-4 animate-spin mr-1 sm:mr-2" />
                 ) : (
                   <RefreshCw className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                 )}
-                <span className="hidden sm:inline">Refresh</span>
+                <span className="hidden sm:inline">Refresh Now</span>
                 <span className="sm:hidden">↻</span>
               </Button>
 
