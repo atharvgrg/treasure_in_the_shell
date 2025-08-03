@@ -66,6 +66,7 @@ export default function Admin() {
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [isResetting, setIsResetting] = useState(false);
   const [activeTab, setActiveTab] = useState<'progress' | 'feedback'>('progress');
+  const [resetPassword, setResetPassword] = useState("");
 
   const fetchProgress = async () => {
     setIsLoading(true);
