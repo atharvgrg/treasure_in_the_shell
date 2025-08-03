@@ -175,7 +175,12 @@ export default function Admin() {
     const averageLevel =
       totalTeams > 0 ? (completedLevels / totalTeams).toFixed(1) : "0";
 
-    return { totalTeams, completedLevels, highestLevel, averageLevel };
+    const totalFeedbacks = feedbackData.length;
+    const averageRating = totalFeedbacks > 0
+      ? (feedbackData.reduce((acc, f) => acc + f.rating, 0) / totalFeedbacks).toFixed(1)
+      : "0";
+
+    return { totalTeams, completedLevels, highestLevel, averageLevel, totalFeedbacks, averageRating };
   };
 
   const stats = getStats();
