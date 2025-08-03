@@ -258,8 +258,38 @@ export const getFeedback: RequestHandler = (req, res) => {
   }
 };
 
+export const getDataStatus: RequestHandler = (req, res) => {
+  console.log("=== DATA STATUS REQUEST ===");
+
+  const status = {
+    submissions: {
+      count: teamSubmissions.length,
+      data: teamSubmissions.map(s => ({
+        teamName: s.teamName,
+        level: s.level,
+        timestamp: s.timestamp.toISOString()
+      }))
+    },
+    feedbacks: {
+      count: teamFeedbacks.length,
+      data: teamFeedbacks.map(f => ({
+        teamName: f.teamName,
+        level: f.level,
+        rating: f.rating,
+        timestamp: f.timestamp.toISOString()
+      }))
+    },
+    timestamp: new Date().toISOString()
+  };
+
+  console.log("Current data status:", status);
+  res.json(status);
+};
+
 export const resetProgress: RequestHandler = (req, res) => {
   try {
+    console.log(`Resetting ${teamSubmissions.length} submissions and ${teamFeedbacks.length} feedbacks`);
+
     // Clear all team submissions and feedbacks
     teamSubmissions.length = 0;
     teamFeedbacks.length = 0;
