@@ -75,11 +75,28 @@ export default function Index() {
           });
 
           if (!feedbackResponse.ok) {
-            console.warn("Feedback submission failed, but continuing with progress submission");
+            const feedbackError = await feedbackResponse.text();
+            console.error("Feedback submission failed:", feedbackError);
+            // Show warning but don't fail the whole submission
+            setSubmission({
+              ...progressResult,
+              message: progressResult.message + " (Note: Feedback submission failed - please contact admin)"
+            });
+          } else {
+            const feedbackResult = await feedbackResponse.json();
+            if (!feedbackResult.success) {
+              console.error("Feedback submission returned error:", feedbackResult.message);
+            } else {
+              console.log("Feedback submitted successfully");
+            }
           }
         } catch (feedbackError) {
-          console.warn("Feedback submission error:", feedbackError);
-          // Don't fail the whole submission if feedback fails
+          console.error("Feedback submission network error:", feedbackError);
+          // Don't fail the whole submission but warn user
+          setSubmission({
+            ...progressResult,
+            message: progressResult.message + " (Note: Feedback submission failed - please contact admin)"
+          });
         }
       }
 
