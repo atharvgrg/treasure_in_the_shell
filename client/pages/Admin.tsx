@@ -66,7 +66,9 @@ export default function Admin() {
   const [isLoading, setIsLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [isResetting, setIsResetting] = useState(false);
-  const [activeTab, setActiveTab] = useState<'progress' | 'feedback'>('progress');
+  const [activeTab, setActiveTab] = useState<"progress" | "feedback">(
+    "progress",
+  );
   const [resetPassword, setResetPassword] = useState("");
 
   const fetchProgress = async () => {
@@ -74,16 +76,18 @@ export default function Admin() {
     try {
       const [progressResponse, feedbackResponse] = await Promise.all([
         fetch("/api/team-progress"),
-        fetch("/api/feedback")
+        fetch("/api/feedback"),
       ]);
 
       if (!progressResponse.ok || !feedbackResponse.ok) {
-        throw new Error(`HTTP error! status: ${progressResponse.status} or ${feedbackResponse.status}`);
+        throw new Error(
+          `HTTP error! status: ${progressResponse.status} or ${feedbackResponse.status}`,
+        );
       }
 
       const [progressData, feedbackData] = await Promise.all([
         progressResponse.json() as Promise<ProgressData>,
-        feedbackResponse.json() as Promise<FeedbackData>
+        feedbackResponse.json() as Promise<FeedbackData>,
       ]);
 
       if (progressData.success) {
@@ -186,11 +190,21 @@ export default function Admin() {
       totalTeams > 0 ? (completedLevels / totalTeams).toFixed(1) : "0";
 
     const totalFeedbacks = feedbackData.length;
-    const averageRating = totalFeedbacks > 0
-      ? (feedbackData.reduce((acc, f) => acc + f.rating, 0) / totalFeedbacks).toFixed(1)
-      : "0";
+    const averageRating =
+      totalFeedbacks > 0
+        ? (
+            feedbackData.reduce((acc, f) => acc + f.rating, 0) / totalFeedbacks
+          ).toFixed(1)
+        : "0";
 
-    return { totalTeams, completedLevels, highestLevel, averageLevel, totalFeedbacks, averageRating };
+    return {
+      totalTeams,
+      completedLevels,
+      highestLevel,
+      averageLevel,
+      totalFeedbacks,
+      averageRating,
+    };
   };
 
   const stats = getStats();
@@ -261,8 +275,8 @@ export default function Admin() {
                       Reset All Progress
                     </AlertDialogTitle>
                     <AlertDialogDescription className="font-mono">
-                      This action will permanently delete all team progress
-                      data and feedback.
+                      This action will permanently delete all team progress data
+                      and feedback.
                       <br />
                       <strong className="text-destructive">
                         This cannot be undone.
@@ -318,21 +332,21 @@ export default function Admin() {
         <div className="flex justify-center mb-6">
           <div className="bg-card/50 rounded-lg p-1 border border-border">
             <button
-              onClick={() => setActiveTab('progress')}
+              onClick={() => setActiveTab("progress")}
               className={`px-4 py-2 rounded-md font-mono text-sm transition-colors ${
-                activeTab === 'progress'
-                  ? 'bg-primary text-primary-foreground'
-                  : 'text-muted-foreground hover:text-foreground'
+                activeTab === "progress"
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               Team Progress
             </button>
             <button
-              onClick={() => setActiveTab('feedback')}
+              onClick={() => setActiveTab("feedback")}
               className={`px-4 py-2 rounded-md font-mono text-sm transition-colors ${
-                activeTab === 'feedback'
-                  ? 'bg-primary text-primary-foreground'
-                  : 'text-muted-foreground hover:text-foreground'
+                activeTab === "feedback"
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               Feedback ({stats.totalFeedbacks})
@@ -408,97 +422,97 @@ export default function Admin() {
         </div>
 
         {/* Main Content based on active tab */}
-        {activeTab === 'progress' && (
+        {activeTab === "progress" && (
           <Card className="bg-card/50 border-border/50">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-primary">
-              <Trophy className="h-5 w-5" />
-              Team Leaderboard
-            </CardTitle>
-            <CardDescription>
-              Real-time progress tracking for all participating teams
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            {isLoading && progressData.length === 0 ? (
-              <div className="flex items-center justify-center py-8">
-                <RefreshCw className="h-8 w-8 animate-spin text-primary mr-2" />
-                <span className="font-mono text-muted-foreground">
-                  Loading team data...
-                </span>
-              </div>
-            ) : progressData.length === 0 ? (
-              <div className="text-center py-8">
-                <Terminal className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <p className="font-mono text-muted-foreground">
-                  No teams have submitted passwords yet
-                </p>
-                <p className="text-sm font-mono text-muted-foreground/60 mt-2">
-                  Submissions will appear here in real-time
-                </p>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {progressData.map((team, index) => (
-                  <div
-                    key={team.teamName}
-                    className={`flex items-center justify-between p-3 sm:p-4 rounded-lg border transition-all ${
-                      index === 0
-                        ? "bg-gradient-to-r from-yellow-500/10 to-primary/10 border-yellow-500/30"
-                        : "bg-muted/30 border-border hover:bg-muted/50"
-                    }`}
-                  >
-                    <div className="flex items-center gap-2 sm:gap-4 min-w-0 flex-1">
-                      <div className="flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 flex-shrink-0">
-                        {getRankIcon(index)}
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-primary">
+                <Trophy className="h-5 w-5" />
+                Team Leaderboard
+              </CardTitle>
+              <CardDescription>
+                Real-time progress tracking for all participating teams
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {isLoading && progressData.length === 0 ? (
+                <div className="flex items-center justify-center py-8">
+                  <RefreshCw className="h-8 w-8 animate-spin text-primary mr-2" />
+                  <span className="font-mono text-muted-foreground">
+                    Loading team data...
+                  </span>
+                </div>
+              ) : progressData.length === 0 ? (
+                <div className="text-center py-8">
+                  <Terminal className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <p className="font-mono text-muted-foreground">
+                    No teams have submitted passwords yet
+                  </p>
+                  <p className="text-sm font-mono text-muted-foreground/60 mt-2">
+                    Submissions will appear here in real-time
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {progressData.map((team, index) => (
+                    <div
+                      key={team.teamName}
+                      className={`flex items-center justify-between p-3 sm:p-4 rounded-lg border transition-all ${
+                        index === 0
+                          ? "bg-gradient-to-r from-yellow-500/10 to-primary/10 border-yellow-500/30"
+                          : "bg-muted/30 border-border hover:bg-muted/50"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2 sm:gap-4 min-w-0 flex-1">
+                        <div className="flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 flex-shrink-0">
+                          {getRankIcon(index)}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <h3 className="font-mono font-semibold text-foreground text-sm sm:text-base truncate">
+                            {team.teamName}
+                          </h3>
+                          <p className="text-xs font-mono text-muted-foreground">
+                            <Clock className="h-3 w-3 inline mr-1" />
+                            <span className="hidden sm:inline">
+                              {team.timestamp.toLocaleString()}
+                            </span>
+                            <span className="sm:hidden">
+                              {team.timestamp.toLocaleDateString()}{" "}
+                              {team.timestamp.toLocaleTimeString([], {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </span>
+                          </p>
+                        </div>
                       </div>
-                      <div className="min-w-0 flex-1">
-                        <h3 className="font-mono font-semibold text-foreground text-sm sm:text-base truncate">
-                          {team.teamName}
-                        </h3>
-                        <p className="text-xs font-mono text-muted-foreground">
-                          <Clock className="h-3 w-3 inline mr-1" />
-                          <span className="hidden sm:inline">
-                            {team.timestamp.toLocaleString()}
-                          </span>
-                          <span className="sm:hidden">
-                            {team.timestamp.toLocaleDateString()}{" "}
-                            {team.timestamp.toLocaleTimeString([], {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
-                          </span>
-                        </p>
-                      </div>
-                    </div>
 
-                    <div className="flex items-center gap-1 sm:gap-3 flex-shrink-0">
-                      <Badge
-                        className={`font-mono px-2 sm:px-3 py-1 text-xs sm:text-sm ${getLevelBadgeColor(team.level)}`}
-                      >
-                        <span className="hidden sm:inline">
-                          Level {team.level}
-                        </span>
-                        <span className="sm:hidden">L{team.level}</span>
-                      </Badge>
-                      {index < 3 && (
+                      <div className="flex items-center gap-1 sm:gap-3 flex-shrink-0">
                         <Badge
-                          variant="outline"
-                          className="text-xs px-1 sm:px-2"
+                          className={`font-mono px-2 sm:px-3 py-1 text-xs sm:text-sm ${getLevelBadgeColor(team.level)}`}
                         >
-                          #{index + 1}
+                          <span className="hidden sm:inline">
+                            Level {team.level}
+                          </span>
+                          <span className="sm:hidden">L{team.level}</span>
                         </Badge>
-                      )}
+                        {index < 3 && (
+                          <Badge
+                            variant="outline"
+                            className="text-xs px-1 sm:px-2"
+                          >
+                            #{index + 1}
+                          </Badge>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
+                  ))}
+                </div>
+              )}
+            </CardContent>
           </Card>
         )}
 
-        {activeTab === 'feedback' && (
+        {activeTab === "feedback" && (
           <Card className="bg-card/50 border-border/50">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-orange-400">
@@ -549,8 +563,8 @@ export default function Admin() {
                                   key={star}
                                   className={`h-4 w-4 ${
                                     star <= feedback.rating
-                                      ? 'text-yellow-500 fill-current'
-                                      : 'text-muted-foreground'
+                                      ? "text-yellow-500 fill-current"
+                                      : "text-muted-foreground"
                                   }`}
                                 />
                               ))}
@@ -561,8 +575,11 @@ export default function Admin() {
                           </div>
                         </div>
                         <p className="text-xs font-mono text-muted-foreground">
-                          {feedback.timestamp.toLocaleDateString()}{' '}
-                          {feedback.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          {feedback.timestamp.toLocaleDateString()}{" "}
+                          {feedback.timestamp.toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
                         </p>
                       </div>
                       {feedback.comments && (
@@ -581,7 +598,7 @@ export default function Admin() {
         )}
 
         {/* Level Distribution */}
-        {activeTab === 'progress' && progressData.length > 0 && (
+        {activeTab === "progress" && progressData.length > 0 && (
           <Card className="mt-8 bg-card/50 border-border/50">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-primary">

@@ -9,7 +9,15 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Terminal, Clock, Calendar, MapPin, Users, Trophy, Star } from "lucide-react";
+import {
+  Terminal,
+  Clock,
+  Calendar,
+  MapPin,
+  Users,
+  Trophy,
+  Star,
+} from "lucide-react";
 
 export default function Index() {
   const [teamName, setTeamName] = useState("");
@@ -55,7 +63,7 @@ export default function Index() {
             teamName: teamName.trim(),
             password: password.trim(),
             rating: rating,
-            comments: ""
+            comments: "",
           }),
         });
         // Don't fail the whole submission if feedback fails
@@ -82,9 +90,13 @@ export default function Index() {
     }
   };
 
-
-
-  const StarRating = ({ currentRating, onRatingChange }: { currentRating: number; onRatingChange: (rating: number) => void }) => {
+  const StarRating = ({
+    currentRating,
+    onRatingChange,
+  }: {
+    currentRating: number;
+    onRatingChange: (rating: number) => void;
+  }) => {
     return (
       <div className="flex gap-1">
         {[1, 2, 3, 4, 5].map((star) => (
@@ -93,7 +105,9 @@ export default function Index() {
             type="button"
             onClick={() => onRatingChange(star)}
             className={`p-1 transition-colors ${
-              star <= currentRating ? "text-yellow-500" : "text-muted-foreground hover:text-yellow-400"
+              star <= currentRating
+                ? "text-yellow-500"
+                : "text-muted-foreground hover:text-yellow-400"
             }`}
           >
             <Star className="h-5 w-5 fill-current" />
@@ -231,7 +245,10 @@ export default function Index() {
                     Overall Experience Rating (Optional)
                   </label>
                   <div className="flex items-center gap-4">
-                    <StarRating currentRating={rating} onRatingChange={setRating} />
+                    <StarRating
+                      currentRating={rating}
+                      onRatingChange={setRating}
+                    />
                     <span className="text-sm font-mono text-muted-foreground">
                       {rating === 0 && "Rate your experience"}
                       {rating === 1 && "Poor"}
@@ -327,8 +344,6 @@ export default function Index() {
             </CardContent>
           </Card>
         </div>
-
-
 
         {/* Footer */}
         <footer className="mt-12 sm:mt-16 text-center">

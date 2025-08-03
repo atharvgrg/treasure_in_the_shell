@@ -148,7 +148,9 @@ export const getTeamProgress: RequestHandler = (req, res) => {
 
 export const submitFeedback: RequestHandler = (req, res) => {
   try {
-    const { teamName, password, rating, comments } = submitFeedbackSchema.parse(req.body);
+    const { teamName, password, rating, comments } = submitFeedbackSchema.parse(
+      req.body,
+    );
 
     // Find the level for this password
     const level = LEVEL_PASSWORDS[password as keyof typeof LEVEL_PASSWORDS];
@@ -156,7 +158,7 @@ export const submitFeedback: RequestHandler = (req, res) => {
     if (!level) {
       return res.json({
         success: false,
-        message: 'Invalid password. Please enter a valid level password.',
+        message: "Invalid password. Please enter a valid level password.",
       });
     }
 
@@ -189,14 +191,14 @@ export const submitFeedback: RequestHandler = (req, res) => {
 
     res.json({
       success: true,
-      message: 'Thank you for your feedback! Your input helps us improve the event.',
+      message:
+        "Thank you for your feedback! Your input helps us improve the event.",
     });
-
   } catch (error) {
     if (error instanceof z.ZodError) {
       return res.status(400).json({
         success: false,
-        message: 'Invalid input. Please check all required fields.',
+        message: "Invalid input. Please check all required fields.",
       });
     }
 
@@ -210,19 +212,19 @@ export const submitFeedback: RequestHandler = (req, res) => {
 
 export const getFeedback: RequestHandler = (req, res) => {
   try {
-    const feedbackData = teamFeedbacks.map(feedback => ({
+    const feedbackData = teamFeedbacks.map((feedback) => ({
       teamName: feedback.teamName,
       level: feedback.level,
       rating: feedback.rating,
       comments: feedback.comments,
       timestamp: feedback.timestamp,
       // Don't expose actual passwords in the response
-      hasPassword: !!feedback.password
+      hasPassword: !!feedback.password,
     }));
 
     res.json({
       success: true,
-      feedbacks: feedbackData
+      feedbacks: feedbackData,
     });
   } catch (error) {
     console.error("Get feedback error:", error);
