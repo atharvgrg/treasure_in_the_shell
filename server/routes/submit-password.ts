@@ -15,16 +15,16 @@ const submitFeedbackSchema = z.object({
 
 // Password to level mapping
 const LEVEL_PASSWORDS = {
-  "ZjLjTmM6FvvyRnrb2rfNWOZOTa6ip5If": 1,
+  ZjLjTmM6FvvyRnrb2rfNWOZOTa6ip5If: 1,
   "263JGJPfgU6LtdEvgfWU1XP5yac29mFx": 2,
-  "MNk8KNH3Usiio41PRUEoDFPqfxLPlSmx": 3,
+  MNk8KNH3Usiio41PRUEoDFPqfxLPlSmx: 3,
   "2WmrDFRmJIq3IPxneAaMGhap0pFhF3NJ": 4,
   "4oQYVPkxZOOEOO5pTW81FB8j8lxXGUQw": 5,
-  "HWasnPhtq9AVKe0dmk45nxy20cvUa6EG": 6,
-  "morbNTDkSW6jIlUc0ymOdMaLnOlFVAaj": 7,
-  "dfwvzFQi4mU0wfNbFOe9RoWskMLg7eEc": 8,
+  HWasnPhtq9AVKe0dmk45nxy20cvUa6EG: 6,
+  morbNTDkSW6jIlUc0ymOdMaLnOlFVAaj: 7,
+  dfwvzFQi4mU0wfNbFOe9RoWskMLg7eEc: 8,
   "4CKMh1JI91bUIZZPXDqGanal4xvAg0JM": 9,
-  "FGUW5ilLVJrxX9kMYMmlN4MgbpfMiqey": 10,
+  FGUW5ilLVJrxX9kMYMmlN4MgbpfMiqey: 10,
 };
 
 interface TeamSubmission {
@@ -62,21 +62,28 @@ export const handleSubmitPassword: RequestHandler = (req, res) => {
       console.log(`Invalid password attempt by team: ${teamName}`);
       return res.json({
         success: false,
-        message: "Invalid password. Please check your submission and try again.",
+        message:
+          "Invalid password. Please check your submission and try again.",
       });
     }
 
     // Check if this exact team+level combination already exists
     const existingSubmission = teamSubmissions.find(
-      (s) => s.teamName.toLowerCase() === teamName.toLowerCase() && s.level === level
+      (s) =>
+        s.teamName.toLowerCase() === teamName.toLowerCase() &&
+        s.level === level,
     );
 
     if (existingSubmission) {
-      console.log(`Team ${teamName} already submitted level ${level}, updating timestamp`);
+      console.log(
+        `Team ${teamName} already submitted level ${level}, updating timestamp`,
+      );
       existingSubmission.timestamp = new Date();
       existingSubmission.password = password;
     } else {
-      console.log(`Team ${teamName} completed level ${level} - adding new entry`);
+      console.log(
+        `Team ${teamName} completed level ${level} - adding new entry`,
+      );
       teamSubmissions.push({
         teamName,
         level,
@@ -92,11 +99,14 @@ export const handleSubmitPassword: RequestHandler = (req, res) => {
     );
 
     console.log(`Total submissions after: ${teamSubmissions.length}`);
-    console.log(`All current submissions:`, teamSubmissions.map(s => ({
-      team: s.teamName,
-      level: s.level,
-      time: s.timestamp.toISOString()
-    })));
+    console.log(
+      `All current submissions:`,
+      teamSubmissions.map((s) => ({
+        team: s.teamName,
+        level: s.level,
+        time: s.timestamp.toISOString(),
+      })),
+    );
     console.log(`=== PASSWORD SUBMISSION END ===\n`);
 
     const messages = [
@@ -162,7 +172,9 @@ export const submitFeedback: RequestHandler = (req, res) => {
     const { teamName, password, rating, comments } = submitFeedbackSchema.parse(
       req.body,
     );
-    console.log(`Team: ${teamName}, Rating: ${rating}, Level password: ${password.substring(0, 8)}...`);
+    console.log(
+      `Team: ${teamName}, Rating: ${rating}, Level password: ${password.substring(0, 8)}...`,
+    );
 
     // Find the level for this password
     const level = LEVEL_PASSWORDS[password as keyof typeof LEVEL_PASSWORDS];
@@ -177,18 +189,24 @@ export const submitFeedback: RequestHandler = (req, res) => {
 
     // Check if this exact team+level feedback already exists
     const existingFeedback = teamFeedbacks.find(
-      (f) => f.teamName.toLowerCase() === teamName.toLowerCase() && f.level === level
+      (f) =>
+        f.teamName.toLowerCase() === teamName.toLowerCase() &&
+        f.level === level,
     );
 
     if (existingFeedback) {
-      console.log(`${teamName} updated feedback: ${rating}/5 stars for level ${level}`);
+      console.log(
+        `${teamName} updated feedback: ${rating}/5 stars for level ${level}`,
+      );
       // Update existing feedback for same level
       existingFeedback.rating = rating;
       existingFeedback.comments = comments;
       existingFeedback.timestamp = new Date();
       existingFeedback.password = password;
     } else {
-      console.log(`${teamName} submitted NEW feedback: ${rating}/5 stars for level ${level}`);
+      console.log(
+        `${teamName} submitted NEW feedback: ${rating}/5 stars for level ${level}`,
+      );
       // Create new feedback entry
       teamFeedbacks.push({
         teamName,
@@ -204,17 +222,21 @@ export const submitFeedback: RequestHandler = (req, res) => {
     teamFeedbacks.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
 
     console.log(`Total feedbacks after: ${teamFeedbacks.length}`);
-    console.log(`All current feedbacks:`, teamFeedbacks.map(f => ({
-      team: f.teamName,
-      level: f.level,
-      rating: f.rating,
-      time: f.timestamp.toISOString()
-    })));
+    console.log(
+      `All current feedbacks:`,
+      teamFeedbacks.map((f) => ({
+        team: f.teamName,
+        level: f.level,
+        rating: f.rating,
+        time: f.timestamp.toISOString(),
+      })),
+    );
     console.log(`=== FEEDBACK SUBMISSION END ===\n`);
 
     res.json({
       success: true,
-      message: "Thank you for your feedback! Your input helps us improve the event.",
+      message:
+        "Thank you for your feedback! Your input helps us improve the event.",
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -264,22 +286,22 @@ export const getDataStatus: RequestHandler = (req, res) => {
   const status = {
     submissions: {
       count: teamSubmissions.length,
-      data: teamSubmissions.map(s => ({
+      data: teamSubmissions.map((s) => ({
         teamName: s.teamName,
         level: s.level,
-        timestamp: s.timestamp.toISOString()
-      }))
+        timestamp: s.timestamp.toISOString(),
+      })),
     },
     feedbacks: {
       count: teamFeedbacks.length,
-      data: teamFeedbacks.map(f => ({
+      data: teamFeedbacks.map((f) => ({
         teamName: f.teamName,
         level: f.level,
         rating: f.rating,
-        timestamp: f.timestamp.toISOString()
-      }))
+        timestamp: f.timestamp.toISOString(),
+      })),
     },
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   };
 
   console.log("Current data status:", status);
@@ -288,7 +310,9 @@ export const getDataStatus: RequestHandler = (req, res) => {
 
 export const resetProgress: RequestHandler = (req, res) => {
   try {
-    console.log(`Resetting ${teamSubmissions.length} submissions and ${teamFeedbacks.length} feedbacks`);
+    console.log(
+      `Resetting ${teamSubmissions.length} submissions and ${teamFeedbacks.length} feedbacks`,
+    );
 
     // Clear all team submissions and feedbacks
     teamSubmissions.length = 0;

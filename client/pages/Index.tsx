@@ -80,12 +80,17 @@ export default function Index() {
             // Show warning but don't fail the whole submission
             setSubmission({
               ...progressResult,
-              message: progressResult.message + " (Note: Feedback submission failed - please contact admin)"
+              message:
+                progressResult.message +
+                " (Note: Feedback submission failed - please contact admin)",
             });
           } else {
             const feedbackResult = await feedbackResponse.json();
             if (!feedbackResult.success) {
-              console.error("Feedback submission returned error:", feedbackResult.message);
+              console.error(
+                "Feedback submission returned error:",
+                feedbackResult.message,
+              );
             } else {
               console.log("Feedback submitted successfully");
             }
@@ -95,7 +100,9 @@ export default function Index() {
           // Don't fail the whole submission but warn user
           setSubmission({
             ...progressResult,
-            message: progressResult.message + " (Note: Feedback submission failed - please contact admin)"
+            message:
+              progressResult.message +
+              " (Note: Feedback submission failed - please contact admin)",
           });
         }
       }
@@ -110,7 +117,8 @@ export default function Index() {
       console.error("Submission error:", error);
       setSubmission({
         success: false,
-        message: "Connection error. Please check your internet connection and try again.",
+        message:
+          "Connection error. Please check your internet connection and try again.",
       });
     } finally {
       setIsSubmitting(false);
