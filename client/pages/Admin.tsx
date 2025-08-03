@@ -59,9 +59,11 @@ interface FeedbackData {
 
 export default function Admin() {
   const [progressData, setProgressData] = useState<TeamProgress[]>([]);
+  const [feedbackData, setFeedbackData] = useState<TeamFeedback[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [isResetting, setIsResetting] = useState(false);
+  const [activeTab, setActiveTab] = useState<'progress' | 'feedback'>('progress');
 
   const fetchProgress = async () => {
     setIsLoading(true);
