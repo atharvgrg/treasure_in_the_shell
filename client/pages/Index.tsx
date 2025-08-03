@@ -226,6 +226,24 @@ export default function Index() {
                     required
                   />
                 </div>
+
+                <div>
+                  <label className="block text-sm font-mono font-medium mb-2">
+                    Overall Experience Rating (Optional)
+                  </label>
+                  <div className="flex items-center gap-4">
+                    <StarRating currentRating={rating} onRatingChange={setRating} />
+                    <span className="text-sm font-mono text-muted-foreground">
+                      {rating === 0 && "Rate your experience"}
+                      {rating === 1 && "Poor"}
+                      {rating === 2 && "Fair"}
+                      {rating === 3 && "Good"}
+                      {rating === 4 && "Very Good"}
+                      {rating === 5 && "Excellent"}
+                    </span>
+                  </div>
+                </div>
+
                 <Button
                   type="submit"
                   disabled={
