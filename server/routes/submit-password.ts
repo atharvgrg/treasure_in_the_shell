@@ -137,89 +137,54 @@ export const getTeamProgress: RequestHandler = (req, res) => {
 };
 
 export const submitFeedback: RequestHandler = (req, res) => {
-  console.log(`\n=== FEEDBACK SUBMISSION START ===`);
-  console.log(`Total feedbacks before: ${teamFeedbacks.length}`);
+  console.log(`\n=== NEW FEEDBACK ===`);
 
   try {
-    const { teamName, password, rating, comments } = submitFeedbackSchema.parse(
-      req.body,
-    );
-    console.log(
-      `Team: ${teamName}, Rating: ${rating}, Level password: ${password.substring(0, 8)}...`,
-    );
+    const { teamName, password, rating, comments } = submitFeedbackSchema.parse(req.body);
 
-    // Find the level for this password
-    const level = LEVEL_PASSWORDS[password as keyof typeof LEVEL_PASSWORDS];
-
+    // Validate password
+    const level = LEVEL_PASSWORDS[password];
     if (!level) {
-      console.log(`Invalid password in feedback from team: ${teamName}`);
+      console.log(`❌ INVALID FEEDBACK PASSWORD from team: ${teamName}`);
       return res.json({
         success: false,
         message: "Invalid password. Please enter a valid level password.",
       });
     }
 
-    // Check if this exact team+level feedback already exists
-    const existingFeedback = teamFeedbacks.find(
-      (f) =>
-        f.teamName.toLowerCase() === teamName.toLowerCase() &&
-        f.level === level,
-    );
+    // ALWAYS ADD NEW FEEDBACK ENTRY
+    const newFeedback: TeamFeedback = {
+      teamName,
+      level,
+      rating,
+      comments,
+      timestamp: new Date(),
+      password,
+    };
 
-    if (existingFeedback) {
-      console.log(
-        `${teamName} updated feedback: ${rating}/5 stars for level ${level}`,
-      );
-      // Update existing feedback for same level
-      existingFeedback.rating = rating;
-      existingFeedback.comments = comments;
-      existingFeedback.timestamp = new Date();
-      existingFeedback.password = password;
-    } else {
-      console.log(
-        `${teamName} submitted NEW feedback: ${rating}/5 stars for level ${level}`,
-      );
-      // Create new feedback entry
-      teamFeedbacks.push({
-        teamName,
-        level,
-        rating,
-        comments,
-        timestamp: new Date(),
-        password,
-      });
-    }
+    teamFeedbacks.push(newFeedback);
 
     // Sort by timestamp descending
     teamFeedbacks.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
 
-    console.log(`Total feedbacks after: ${teamFeedbacks.length}`);
-    console.log(
-      `All current feedbacks:`,
-      teamFeedbacks.map((f) => ({
-        team: f.teamName,
-        level: f.level,
-        rating: f.rating,
-        time: f.timestamp.toISOString(),
-      })),
-    );
-    console.log(`=== FEEDBACK SUBMISSION END ===\n`);
+    console.log(`✅ FEEDBACK ADDED: ${teamName} gave ${rating}/5 stars for level ${level}`);
+    console.log(`📊 TOTAL FEEDBACK ENTRIES: ${teamFeedbacks.length}`);
+    console.log(`📋 ALL FEEDBACK:`, teamFeedbacks.map(f => `${f.teamName}-L${f.level}-${f.rating}★`));
 
     res.json({
       success: true,
-      message:
-        "Thank you for your feedback! Your input helps us improve the event.",
+      message: "Thank you for your feedback! Your input helps us improve the event.",
     });
   } catch (error) {
+    console.error("❌ FEEDBACK ERROR:", error);
+
     if (error instanceof z.ZodError) {
-      console.error("Feedback validation error:", error.errors);
       return res.status(400).json({
         success: false,
         message: "Invalid input. Please check all required fields.",
       });
     }
 
-    console.error("Submit feedback error:", error);
     res.status(500).json({
       success: false,
       message: "Server error. Please try again later.",
