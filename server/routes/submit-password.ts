@@ -34,8 +34,18 @@ interface TeamSubmission {
   password: string;
 }
 
+interface TeamFeedback {
+  teamName: string;
+  level: number;
+  rating: number;
+  comments?: string;
+  timestamp: Date;
+  password: string;
+}
+
 // In-memory storage (in production, use a proper database)
 let teamSubmissions: TeamSubmission[] = [];
+let teamFeedbacks: TeamFeedback[] = [];
 
 export const handleSubmitPassword: RequestHandler = (req, res) => {
   try {
