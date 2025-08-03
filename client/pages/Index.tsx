@@ -85,7 +85,7 @@ export default function Index() {
 
 
 
-  const StarRating = ({ rating, onRatingChange }: { rating: number; onRatingChange: (rating: number) => void }) => {
+  const StarRating = ({ currentRating, onRatingChange }: { currentRating: number; onRatingChange: (rating: number) => void }) => {
     return (
       <div className="flex gap-1">
         {[1, 2, 3, 4, 5].map((star) => (
@@ -94,10 +94,10 @@ export default function Index() {
             type="button"
             onClick={() => onRatingChange(star)}
             className={`p-1 transition-colors ${
-              star <= rating ? "text-yellow-500" : "text-muted-foreground hover:text-yellow-400"
+              star <= currentRating ? "text-yellow-500" : "text-muted-foreground hover:text-yellow-400"
             }`}
           >
-            <Star className="h-6 w-6 fill-current" />
+            <Star className="h-5 w-5 fill-current" />
           </button>
         ))}
       </div>
