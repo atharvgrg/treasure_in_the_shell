@@ -70,6 +70,7 @@ export default function Admin() {
     "progress",
   );
   const [resetPassword, setResetPassword] = useState("");
+  const [showDebug, setShowDebug] = useState(false);
 
   const fetchProgress = async () => {
     setIsLoading(true);
