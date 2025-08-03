@@ -30,6 +30,7 @@ export function createServer() {
   app.get("/api/team-progress", getTeamProgress);
   app.post("/api/submit-feedback", submitFeedback);
   app.get("/api/feedback", getFeedback);
+  app.get("/api/debug-status", getDataStatus);
   app.post("/api/reset-progress", resetProgress);
 
   return app;
