@@ -50,7 +50,8 @@ export default function Index() {
       console.error("Submission error:", error);
       setSubmission({
         success: false,
-        message: "Connection error. Please check your internet connection and try again.",
+        message:
+          "Connection error. Please check your internet connection and try again.",
       });
     } finally {
       setIsSubmitting(false);
