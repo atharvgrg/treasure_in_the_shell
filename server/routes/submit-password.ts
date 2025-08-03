@@ -114,21 +114,28 @@ export const handleSubmitPassword: RequestHandler = (req, res) => {
 };
 
 export const getTeamProgress: RequestHandler = (req, res) => {
+  console.log(`\n📊 PROGRESS REQUEST - Current entries: ${teamSubmissions.length}`);
+
   try {
-    const progressData = teamSubmissions.map((submission) => ({
+    const progressData = teamSubmissions.map((submission, index) => ({
+      id: `${submission.teamName}_${submission.level}_${submission.timestamp.getTime()}`,
       teamName: submission.teamName,
       level: submission.level,
       timestamp: submission.timestamp,
-      // Don't expose actual passwords in the response
       hasPassword: !!submission.password,
     }));
+
+    console.log(`📤 SENDING ${progressData.length} progress entries`);
+    console.log(`📋 ENTRIES:`, progressData.map(p => `${p.teamName}-L${p.level}`));
 
     res.json({
       success: true,
       teams: progressData,
+      total: progressData.length,
+      timestamp: new Date().toISOString(),
     });
   } catch (error) {
-    console.error("Get team progress error:", error);
+    console.error("❌ GET PROGRESS ERROR:", error);
     res.status(500).json({
       success: false,
       message: "Server error. Please try again later.",
