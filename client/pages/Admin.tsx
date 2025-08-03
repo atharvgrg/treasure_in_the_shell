@@ -44,6 +44,27 @@ export default function Admin() {
     }
   };
 
+  const handleReset = async () => {
+    setIsResetting(true);
+    try {
+      const response = await fetch('/api/reset-progress', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setProgressData([]);
+        setLastUpdated(new Date());
+      }
+    } catch (error) {
+      console.error('Failed to reset progress:', error);
+    } finally {
+      setIsResetting(false);
+    }
+  };
+
   useEffect(() => {
     fetchProgress();
     // Auto-refresh every 30 seconds
