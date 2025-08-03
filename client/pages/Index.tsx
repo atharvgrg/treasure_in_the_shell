@@ -34,10 +34,19 @@ export default function Index() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!teamName.trim() || !password.trim()) return;
+    console.log("Form submitted with:", { teamName: teamName.trim(), password: password.trim(), rating });
+
+    if (!teamName.trim() || !password.trim()) {
+      console.error("Missing required fields");
+      return;
+    }
 
     setIsSubmitting(true);
+    setSubmission(null); // Clear previous submission status
+
     try {
+      console.log("Submitting progress to /api/submit-password");
+
       // Submit progress
       const progressResponse = await fetch("/api/submit-password", {
         method: "POST",
@@ -48,14 +57,21 @@ export default function Index() {
         }),
       });
 
+      console.log("Progress response status:", progressResponse.status);
+
       if (!progressResponse.ok) {
-        throw new Error(`HTTP error! status: ${progressResponse.status}`);
+        const errorText = await progressResponse.text();
+        console.error("Progress submission failed:", errorText);
+        throw new Error(`HTTP error! status: ${progressResponse.status}, response: ${errorText}`);
       }
 
       const progressResult = await progressResponse.json();
+      console.log("Progress result:", progressResult);
 
       // Submit feedback if rating is provided
       if (rating > 0 && progressResult.success) {
+        console.log("Submitting feedback to /api/submit-feedback");
+
         const feedbackResponse = await fetch("/api/submit-feedback", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -66,15 +82,22 @@ export default function Index() {
             comments: "",
           }),
         });
-        // Don't fail the whole submission if feedback fails
+
+        console.log("Feedback response status:", feedbackResponse.status);
+
         if (!feedbackResponse.ok) {
-          console.warn("Feedback submission failed");
+          const feedbackError = await feedbackResponse.text();
+          console.warn("Feedback submission failed:", feedbackError);
+        } else {
+          const feedbackResult = await feedbackResponse.json();
+          console.log("Feedback result:", feedbackResult);
         }
       }
 
       setSubmission(progressResult);
 
       if (progressResult.success) {
+        console.log("Submission successful, clearing form");
         setPassword("");
         setRating(0);
       }
@@ -82,8 +105,7 @@ export default function Index() {
       console.error("Submission error:", error);
       setSubmission({
         success: false,
-        message:
-          "Connection error. Please check your internet connection and try again.",
+        message: `Submission failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       });
     } finally {
       setIsSubmitting(false);
