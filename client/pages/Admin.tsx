@@ -288,6 +288,32 @@ export default function Admin() {
       </header>
 
       <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
+        {/* Tab Navigation */}
+        <div className="flex justify-center mb-6">
+          <div className="bg-card/50 rounded-lg p-1 border border-border">
+            <button
+              onClick={() => setActiveTab('progress')}
+              className={`px-4 py-2 rounded-md font-mono text-sm transition-colors ${
+                activeTab === 'progress'
+                  ? 'bg-primary text-primary-foreground'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              Team Progress
+            </button>
+            <button
+              onClick={() => setActiveTab('feedback')}
+              className={`px-4 py-2 rounded-md font-mono text-sm transition-colors ${
+                activeTab === 'feedback'
+                  ? 'bg-primary text-primary-foreground'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              Feedback ({stats.totalFeedbacks})
+            </button>
+          </div>
+        </div>
+
         {/* Stats Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
           <Card className="bg-card/50 border-primary/20">
