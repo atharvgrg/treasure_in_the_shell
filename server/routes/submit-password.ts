@@ -91,6 +91,14 @@ export const handleSubmitPassword: RequestHandler = (req, res) => {
         b.level - a.level || a.timestamp.getTime() - b.timestamp.getTime(),
     );
 
+    console.log(`Total submissions after: ${teamSubmissions.length}`);
+    console.log(`All current submissions:`, teamSubmissions.map(s => ({
+      team: s.teamName,
+      level: s.level,
+      time: s.timestamp.toISOString()
+    })));
+    console.log(`=== PASSWORD SUBMISSION END ===\n`);
+
     const messages = [
       "Password accepted! Great work cracking the shell!",
       "Level unlocked! You're getting closer to the treasure!",
