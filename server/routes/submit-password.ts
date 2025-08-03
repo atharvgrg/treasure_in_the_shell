@@ -176,15 +176,22 @@ export const getTeamProgress: RequestHandler = (req, res) => {
 };
 
 export const submitFeedback: RequestHandler = (req, res) => {
+  console.log("=== FEEDBACK SUBMISSION REQUEST ===");
+  console.log("Request body:", req.body);
+  console.log("Current team feedbacks count:", teamFeedbacks.length);
+
   try {
     const { teamName, password, rating, comments } = submitFeedbackSchema.parse(
       req.body,
     );
+    console.log("Parsed feedback data:", { teamName, rating, comments, password: password.substring(0, 10) + "..." });
 
     // Find the level for this password
     const level = LEVEL_PASSWORDS[password as keyof typeof LEVEL_PASSWORDS];
+    console.log("Feedback password lookup - Level:", level);
 
     if (!level) {
+      console.log("Invalid password provided for feedback");
       return res.json({
         success: false,
         message: "Invalid password. Please enter a valid level password.",
@@ -195,8 +202,10 @@ export const submitFeedback: RequestHandler = (req, res) => {
     const existingFeedback = teamFeedbacks.find(
       (f) => f.teamName.toLowerCase() === teamName.toLowerCase(),
     );
+    console.log("Existing feedback check:", existingFeedback ? `Found rating ${existingFeedback.rating}` : "None found");
 
     if (existingFeedback) {
+      console.log(`Updating existing feedback for ${teamName}`);
       // Update existing feedback
       existingFeedback.level = level;
       existingFeedback.rating = rating;
@@ -204,6 +213,7 @@ export const submitFeedback: RequestHandler = (req, res) => {
       existingFeedback.timestamp = new Date();
       existingFeedback.password = password;
     } else {
+      console.log(`Creating new feedback for ${teamName}`);
       // Create new feedback
       teamFeedbacks.push({
         teamName,
@@ -218,13 +228,21 @@ export const submitFeedback: RequestHandler = (req, res) => {
     // Sort by timestamp descending
     teamFeedbacks.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
 
-    res.json({
+    console.log("Updated team feedbacks count:", teamFeedbacks.length);
+    console.log("Team feedbacks:", teamFeedbacks.map(f => ({ name: f.teamName, rating: f.rating, level: f.level })));
+
+    const response = {
       success: true,
-      message:
-        "Thank you for your feedback! Your input helps us improve the event.",
-    });
+      message: "Thank you for your feedback! Your input helps us improve the event.",
+    };
+
+    console.log("Sending feedback success response:", response);
+    res.json(response);
   } catch (error) {
+    console.error("=== FEEDBACK SUBMISSION ERROR ===");
+
     if (error instanceof z.ZodError) {
+      console.error("Feedback validation error:", error.errors);
       return res.status(400).json({
         success: false,
         message: "Invalid input. Please check all required fields.",
