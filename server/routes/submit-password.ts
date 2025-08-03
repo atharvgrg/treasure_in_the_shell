@@ -200,23 +200,30 @@ export const submitFeedback: RequestHandler = (req, res) => {
 };
 
 export const getFeedback: RequestHandler = (req, res) => {
+  console.log(`\n📊 FEEDBACK REQUEST - Current entries: ${teamFeedbacks.length}`);
+
   try {
-    const feedbackData = teamFeedbacks.map((feedback) => ({
+    const feedbackData = teamFeedbacks.map((feedback, index) => ({
+      id: `${feedback.teamName}_${feedback.level}_${feedback.timestamp.getTime()}`,
       teamName: feedback.teamName,
       level: feedback.level,
       rating: feedback.rating,
       comments: feedback.comments,
       timestamp: feedback.timestamp,
-      // Don't expose actual passwords in the response
       hasPassword: !!feedback.password,
     }));
+
+    console.log(`📤 SENDING ${feedbackData.length} feedback entries`);
+    console.log(`📋 ENTRIES:`, feedbackData.map(f => `${f.teamName}-L${f.level}-${f.rating}★`));
 
     res.json({
       success: true,
       feedbacks: feedbackData,
+      total: feedbackData.length,
+      timestamp: new Date().toISOString(),
     });
   } catch (error) {
-    console.error("Get feedback error:", error);
+    console.error("❌ GET FEEDBACK ERROR:", error);
     res.status(500).json({
       success: false,
       message: "Server error. Please try again later.",
