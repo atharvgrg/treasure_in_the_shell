@@ -31,7 +31,8 @@ export default function Index() {
 
     setIsSubmitting(true);
     try {
-      const response = await fetch("/api/submit-password", {
+      // Submit progress
+      const progressResponse = await fetch("/api/submit-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -40,15 +41,35 @@ export default function Index() {
         }),
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      if (!progressResponse.ok) {
+        throw new Error(`HTTP error! status: ${progressResponse.status}`);
       }
 
-      const result = await response.json();
-      setSubmission(result);
+      const progressResult = await progressResponse.json();
 
-      if (result.success) {
+      // Submit feedback if rating is provided
+      if (rating > 0 && progressResult.success) {
+        const feedbackResponse = await fetch("/api/submit-feedback", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            teamName: teamName.trim(),
+            password: password.trim(),
+            rating: rating,
+            comments: ""
+          }),
+        });
+        // Don't fail the whole submission if feedback fails
+        if (!feedbackResponse.ok) {
+          console.warn("Feedback submission failed");
+        }
+      }
+
+      setSubmission(progressResult);
+
+      if (progressResult.success) {
         setPassword("");
+        setRating(0);
       }
     } catch (error) {
       console.error("Submission error:", error);
