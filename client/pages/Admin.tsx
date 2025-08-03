@@ -148,8 +148,8 @@ export default function Admin() {
 
   useEffect(() => {
     fetchProgress();
-    // Auto-refresh every 30 seconds
-    const interval = setInterval(fetchProgress, 30000);
+    // Auto-refresh every 5 seconds for real-time updates
+    const interval = setInterval(fetchProgress, 5000);
     return () => clearInterval(interval);
   }, []);
 
