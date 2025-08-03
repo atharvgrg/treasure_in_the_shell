@@ -79,23 +79,25 @@ export default function Admin() {
       const timestamp = Date.now();
       const [progressResponse, feedbackResponse] = await Promise.all([
         fetch(`/api/team-progress?t=${timestamp}`, {
-          cache: 'no-cache',
+          cache: "no-cache",
           headers: {
-            'Cache-Control': 'no-cache',
-            'Pragma': 'no-cache'
-          }
+            "Cache-Control": "no-cache",
+            Pragma: "no-cache",
+          },
         }),
         fetch(`/api/feedback?t=${timestamp}`, {
-          cache: 'no-cache',
+          cache: "no-cache",
           headers: {
-            'Cache-Control': 'no-cache',
-            'Pragma': 'no-cache'
-          }
+            "Cache-Control": "no-cache",
+            Pragma: "no-cache",
+          },
         }),
       ]);
 
       if (!progressResponse.ok || !feedbackResponse.ok) {
-        console.error(`API Error - Progress: ${progressResponse.status}, Feedback: ${feedbackResponse.status}`);
+        console.error(
+          `API Error - Progress: ${progressResponse.status}, Feedback: ${feedbackResponse.status}`,
+        );
         throw new Error(
           `HTTP error! status: ${progressResponse.status} or ${feedbackResponse.status}`,
         );
@@ -254,18 +256,22 @@ export default function Admin() {
               {lastUpdated && (
                 <div className="text-xs text-muted-foreground font-mono hidden lg:block">
                   Last updated: {lastUpdated.toLocaleTimeString()}
-                  {isLoading && <span className="text-primary ml-2">• Refreshing...</span>}
+                  {isLoading && (
+                    <span className="text-primary ml-2">• Refreshing...</span>
+                  )}
                 </div>
               )}
               <div className="text-xs text-muted-foreground font-mono lg:hidden">
-                {isLoading && <span className="text-primary">Refreshing...</span>}
+                {isLoading && (
+                  <span className="text-primary">Refreshing...</span>
+                )}
               </div>
               <Button
                 onClick={fetchProgress}
                 disabled={isLoading}
                 variant="outline"
                 size="sm"
-                className={`font-mono text-xs sm:text-sm ${isLoading ? 'bg-primary/10' : ''}`}
+                className={`font-mono text-xs sm:text-sm ${isLoading ? "bg-primary/10" : ""}`}
               >
                 {isLoading ? (
                   <RefreshCw className="h-3 w-3 sm:h-4 sm:w-4 animate-spin mr-1 sm:mr-2" />
@@ -358,14 +364,15 @@ export default function Admin() {
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 rounded-full border border-primary/20">
             <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
             <span className="text-xs font-mono text-primary">
-              LIVE: {progressData.length} submissions • {feedbackData.length} feedback entries
+              LIVE: {progressData.length} submissions • {feedbackData.length}{" "}
+              feedback entries
             </span>
           </div>
           <button
             onClick={() => setShowDebug(!showDebug)}
             className="text-xs text-muted-foreground hover:text-foreground ml-4"
           >
-            {showDebug ? 'Hide' : 'Show'} Debug
+            {showDebug ? "Hide" : "Show"} Debug
           </button>
         </div>
 
@@ -373,14 +380,37 @@ export default function Admin() {
         {showDebug && (
           <Card className="mb-6 bg-muted/20 border-muted">
             <CardHeader>
-              <CardTitle className="text-sm text-muted-foreground">Debug Information</CardTitle>
+              <CardTitle className="text-sm text-muted-foreground">
+                Debug Information
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-xs font-mono space-y-2">
-                <div>Last fetch: {lastUpdated?.toISOString() || 'Never'}</div>
+                <div>Last fetch: {lastUpdated?.toISOString() || "Never"}</div>
                 <div>Auto-refresh: Every 5 seconds</div>
-                <div>Progress data: {JSON.stringify(progressData.map(p => ({ team: p.teamName, level: p.level })), null, 2)}</div>
-                <div>Feedback data: {JSON.stringify(feedbackData.map(f => ({ team: f.teamName, level: f.level, rating: f.rating })), null, 2)}</div>
+                <div>
+                  Progress data:{" "}
+                  {JSON.stringify(
+                    progressData.map((p) => ({
+                      team: p.teamName,
+                      level: p.level,
+                    })),
+                    null,
+                    2,
+                  )}
+                </div>
+                <div>
+                  Feedback data:{" "}
+                  {JSON.stringify(
+                    feedbackData.map((f) => ({
+                      team: f.teamName,
+                      level: f.level,
+                      rating: f.rating,
+                    })),
+                    null,
+                    2,
+                  )}
+                </div>
               </div>
             </CardContent>
           </Card>
