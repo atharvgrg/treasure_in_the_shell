@@ -13,18 +13,18 @@ const submitFeedbackSchema = z.object({
   comments: z.string().optional(),
 });
 
-// Password to level mapping
-const LEVEL_PASSWORDS = {
-  ZjLjTmM6FvvyRnrb2rfNWOZOTa6ip5If: 1,
+// Password to level mapping - ALL KEYS MUST BE QUOTED STRINGS
+const LEVEL_PASSWORDS: Record<string, number> = {
+  "ZjLjTmM6FvvyRnrb2rfNWOZOTa6ip5If": 1,
   "263JGJPfgU6LtdEvgfWU1XP5yac29mFx": 2,
-  MNk8KNH3Usiio41PRUEoDFPqfxLPlSmx: 3,
+  "MNk8KNH3Usiio41PRUEoDFPqfxLPlSmx": 3,
   "2WmrDFRmJIq3IPxneAaMGhap0pFhF3NJ": 4,
   "4oQYVPkxZOOEOO5pTW81FB8j8lxXGUQw": 5,
-  HWasnPhtq9AVKe0dmk45nxy20cvUa6EG: 6,
-  morbNTDkSW6jIlUc0ymOdMaLnOlFVAaj: 7,
-  dfwvzFQi4mU0wfNbFOe9RoWskMLg7eEc: 8,
+  "HWasnPhtq9AVKe0dmk45nxy20cvUa6EG": 6,
+  "morbNTDkSW6jIlUc0ymOdMaLnOlFVAaj": 7,
+  "dfwvzFQi4mU0wfNbFOe9RoWskMLg7eEc": 8,
   "4CKMh1JI91bUIZZPXDqGanal4xvAg0JM": 9,
-  FGUW5ilLVJrxX9kMYMmlN4MgbpfMiqey: 10,
+  "FGUW5ilLVJrxX9kMYMmlN4MgbpfMiqey": 10,
 };
 
 interface TeamSubmission {
