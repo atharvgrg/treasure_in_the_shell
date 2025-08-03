@@ -201,7 +201,7 @@ export default function Index() {
         </div>
 
         {/* Main Content Grid */}
-        <div className="grid lg:grid-cols-2 gap-4 sm:gap-8 max-w-6xl mx-auto">
+        <div className="grid lg:grid-cols-2 gap-4 sm:gap-8 max-w-6xl mx-auto mb-8">
           {/* Submission Form */}
           <Card className="border-2 border-primary/20 bg-card/50 backdrop-blur-sm">
             <CardHeader>
