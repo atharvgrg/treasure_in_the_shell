@@ -38,9 +38,23 @@ interface TeamProgress {
   hasPassword: boolean;
 }
 
+interface TeamFeedback {
+  teamName: string;
+  level: number;
+  rating: number;
+  comments?: string;
+  timestamp: Date;
+  hasPassword: boolean;
+}
+
 interface ProgressData {
   success: boolean;
   teams: TeamProgress[];
+}
+
+interface FeedbackData {
+  success: boolean;
+  feedbacks: TeamFeedback[];
 }
 
 export default function Admin() {
