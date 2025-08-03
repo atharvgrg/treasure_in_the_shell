@@ -135,6 +135,51 @@ export default function Admin() {
                 <span className="hidden sm:inline">Refresh</span>
                 <span className="sm:hidden">↻</span>
               </Button>
+
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    className="font-mono text-xs sm:text-sm"
+                    disabled={isResetting || progressData.length === 0}
+                  >
+                    {isResetting ? (
+                      <RefreshCw className="h-3 w-3 sm:h-4 sm:w-4 animate-spin mr-1 sm:mr-2" />
+                    ) : (
+                      <Trash2 className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                    )}
+                    <span className="hidden sm:inline">Reset All</span>
+                    <span className="sm:hidden">Reset</span>
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent className="bg-card border-destructive/20">
+                  <AlertDialogHeader>
+                    <AlertDialogTitle className="text-destructive flex items-center gap-2">
+                      <Trash2 className="h-5 w-5" />
+                      Reset All Progress
+                    </AlertDialogTitle>
+                    <AlertDialogDescription className="font-mono">
+                      This action will permanently delete all team progress data.
+                      <br />
+                      <strong className="text-destructive">This cannot be undone.</strong>
+                      <br /><br />
+                      Teams affected: {progressData.length}
+                      <br />
+                      Total progress lost: {progressData.reduce((acc, team) => acc + team.level, 0)} levels
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel className="font-mono">Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={handleReset}
+                      className="bg-destructive hover:bg-destructive/90 font-mono"
+                    >
+                      Yes, Reset Everything
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </div>
           </div>
         </div>
