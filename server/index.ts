@@ -27,6 +27,8 @@ export function createServer() {
   app.get("/api/demo", handleDemo);
   app.post("/api/submit-password", handleSubmitPassword);
   app.get("/api/team-progress", getTeamProgress);
+  app.post("/api/submit-feedback", submitFeedback);
+  app.get("/api/feedback", getFeedback);
   app.post("/api/reset-progress", resetProgress);
 
   return app;
