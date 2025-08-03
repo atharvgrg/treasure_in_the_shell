@@ -146,16 +146,104 @@ export const getTeamProgress: RequestHandler = (req, res) => {
   }
 };
 
-export const resetProgress: RequestHandler = (req, res) => {
+export const submitFeedback: RequestHandler = (req, res) => {
   try {
-    // Clear all team submissions
-    teamSubmissions.length = 0;
+    const { teamName, password, rating, comments } = submitFeedbackSchema.parse(req.body);
 
-    console.log("All team progress has been reset");
+    // Find the level for this password
+    const level = LEVEL_PASSWORDS[password as keyof typeof LEVEL_PASSWORDS];
+
+    if (!level) {
+      return res.json({
+        success: false,
+        message: 'Invalid password. Please enter a valid level password.',
+      });
+    }
+
+    // Check if team already submitted feedback
+    const existingFeedback = teamFeedbacks.find(
+      (f) => f.teamName.toLowerCase() === teamName.toLowerCase(),
+    );
+
+    if (existingFeedback) {
+      // Update existing feedback
+      existingFeedback.level = level;
+      existingFeedback.rating = rating;
+      existingFeedback.comments = comments;
+      existingFeedback.timestamp = new Date();
+      existingFeedback.password = password;
+    } else {
+      // Create new feedback
+      teamFeedbacks.push({
+        teamName,
+        level,
+        rating,
+        comments,
+        timestamp: new Date(),
+        password,
+      });
+    }
+
+    // Sort by timestamp descending
+    teamFeedbacks.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
 
     res.json({
       success: true,
-      message: "All team progress has been successfully reset.",
+      message: 'Thank you for your feedback! Your input helps us improve the event.',
+    });
+
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid input. Please check all required fields.',
+      });
+    }
+
+    console.error("Submit feedback error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error. Please try again later.",
+    });
+  }
+};
+
+export const getFeedback: RequestHandler = (req, res) => {
+  try {
+    const feedbackData = teamFeedbacks.map(feedback => ({
+      teamName: feedback.teamName,
+      level: feedback.level,
+      rating: feedback.rating,
+      comments: feedback.comments,
+      timestamp: feedback.timestamp,
+      // Don't expose actual passwords in the response
+      hasPassword: !!feedback.password
+    }));
+
+    res.json({
+      success: true,
+      feedbacks: feedbackData
+    });
+  } catch (error) {
+    console.error("Get feedback error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error. Please try again later.",
+    });
+  }
+};
+
+export const resetProgress: RequestHandler = (req, res) => {
+  try {
+    // Clear all team submissions and feedbacks
+    teamSubmissions.length = 0;
+    teamFeedbacks.length = 0;
+
+    console.log("All team progress and feedback has been reset");
+
+    res.json({
+      success: true,
+      message: "All team progress and feedback has been successfully reset.",
     });
   } catch (error) {
     console.error("Reset progress error:", error);
