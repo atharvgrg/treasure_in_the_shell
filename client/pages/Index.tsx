@@ -22,6 +22,14 @@ export default function Index() {
     message: string;
   } | null>(null);
 
+  // Feedback state
+  const [feedbackTeamName, setFeedbackTeamName] = useState("");
+  const [feedbackPassword, setFeedbackPassword] = useState("");
+  const [feedbackRating, setFeedbackRating] = useState<number>(0);
+  const [feedbackComments, setFeedbackComments] = useState("");
+  const [isSubmittingFeedback, setIsSubmittingFeedback] = useState(false);
+  const [feedbackSubmission, setFeedbackSubmission] = useState<{ success: boolean; message: string } | null>(null);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!teamName.trim() || !password.trim()) return;
