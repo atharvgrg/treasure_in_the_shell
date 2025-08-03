@@ -83,46 +83,7 @@ export default function Index() {
     }
   };
 
-  const handleFeedbackSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!feedbackTeamName.trim() || !feedbackPassword.trim() || feedbackRating === 0) return;
 
-    setIsSubmittingFeedback(true);
-    try {
-      const response = await fetch("/api/submit-feedback", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          teamName: feedbackTeamName.trim(),
-          password: feedbackPassword.trim(),
-          rating: feedbackRating,
-          comments: feedbackComments.trim()
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const result = await response.json();
-      setFeedbackSubmission(result);
-
-      if (result.success) {
-        setFeedbackTeamName("");
-        setFeedbackPassword("");
-        setFeedbackRating(0);
-        setFeedbackComments("");
-      }
-    } catch (error) {
-      console.error("Feedback submission error:", error);
-      setFeedbackSubmission({
-        success: false,
-        message: "Connection error. Please check your internet connection and try again.",
-      });
-    } finally {
-      setIsSubmittingFeedback(false);
-    }
-  };
 
   const StarRating = ({ rating, onRatingChange }: { rating: number; onRatingChange: (rating: number) => void }) => {
     return (
