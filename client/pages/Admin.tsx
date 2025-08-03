@@ -381,8 +381,9 @@ export default function Admin() {
           </Card>
         </div>
 
-        {/* Team Progress Table */}
-        <Card className="bg-card/50 border-border/50">
+        {/* Main Content based on active tab */}
+        {activeTab === 'progress' && (
+          <Card className="bg-card/50 border-border/50">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-primary">
               <Trophy className="h-5 w-5" />
@@ -468,10 +469,93 @@ export default function Admin() {
               </div>
             )}
           </CardContent>
-        </Card>
+          </Card>
+        )}
+
+        {activeTab === 'feedback' && (
+          <Card className="bg-card/50 border-border/50">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-orange-400">
+                <MessageSquare className="h-5 w-5" />
+                Team Feedback
+              </CardTitle>
+              <CardDescription>
+                Feedback and ratings from participating teams
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {isLoading && feedbackData.length === 0 ? (
+                <div className="flex items-center justify-center py-8">
+                  <RefreshCw className="h-8 w-8 animate-spin text-primary mr-2" />
+                  <span className="font-mono text-muted-foreground">
+                    Loading feedback data...
+                  </span>
+                </div>
+              ) : feedbackData.length === 0 ? (
+                <div className="text-center py-8">
+                  <MessageSquare className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <p className="font-mono text-muted-foreground">
+                    No feedback submissions yet
+                  </p>
+                  <p className="text-sm font-mono text-muted-foreground/60 mt-2">
+                    Feedback will appear here when teams submit reviews
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {feedbackData.map((feedback, index) => (
+                    <div
+                      key={`${feedback.teamName}-${feedback.timestamp.getTime()}`}
+                      className="p-4 rounded-lg border bg-muted/20 border-border"
+                    >
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex-1">
+                          <h3 className="font-mono font-semibold text-foreground text-sm sm:text-base">
+                            {feedback.teamName}
+                          </h3>
+                          <div className="flex items-center gap-4 mt-1">
+                            <Badge className="text-xs px-2 py-1 bg-orange-500/20 text-orange-400">
+                              Level {feedback.level}
+                            </Badge>
+                            <div className="flex items-center gap-1">
+                              {[1, 2, 3, 4, 5].map((star) => (
+                                <Star
+                                  key={star}
+                                  className={`h-4 w-4 ${
+                                    star <= feedback.rating
+                                      ? 'text-yellow-500 fill-current'
+                                      : 'text-muted-foreground'
+                                  }`}
+                                />
+                              ))}
+                              <span className="text-sm font-mono text-muted-foreground ml-2">
+                                ({feedback.rating}/5)
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <p className="text-xs font-mono text-muted-foreground">
+                          {feedback.timestamp.toLocaleDateString()}{' '}
+                          {feedback.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </p>
+                      </div>
+                      {feedback.comments && (
+                        <div className="mt-3 p-3 bg-background/50 rounded border border-border/50">
+                          <p className="text-sm text-muted-foreground font-mono">
+                            "{feedback.comments}"
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
 
         {/* Level Distribution */}
-        {progressData.length > 0 && (
+        {activeTab === 'progress' && progressData.length > 0 && (
           <Card className="mt-8 bg-card/50 border-border/50">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-primary">
