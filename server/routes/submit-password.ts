@@ -48,17 +48,23 @@ let teamSubmissions: TeamSubmission[] = [];
 let teamFeedbacks: TeamFeedback[] = [];
 
 export const handleSubmitPassword: RequestHandler = (req, res) => {
+  console.log("=== PASSWORD SUBMISSION REQUEST ===");
+  console.log("Request body:", req.body);
+  console.log("Current team submissions count:", teamSubmissions.length);
+
   try {
     const { teamName, password } = submitPasswordSchema.parse(req.body);
+    console.log("Parsed data:", { teamName, password: password.substring(0, 10) + "..." });
 
     // Find the level for this password
     const level = LEVEL_PASSWORDS[password as keyof typeof LEVEL_PASSWORDS];
+    console.log("Password lookup result - Level:", level);
 
     if (!level) {
+      console.log("Invalid password provided");
       return res.json({
         success: false,
-        message:
-          "Invalid password. Please check your submission and try again.",
+        message: "Invalid password. Please check your submission and try again.",
       });
     }
 
@@ -66,8 +72,10 @@ export const handleSubmitPassword: RequestHandler = (req, res) => {
     const existingSubmission = teamSubmissions.find(
       (s) => s.teamName.toLowerCase() === teamName.toLowerCase(),
     );
+    console.log("Existing submission check:", existingSubmission ? `Found level ${existingSubmission.level}` : "None found");
 
     if (existingSubmission && existingSubmission.level >= level) {
+      console.log(`Team ${teamName} already has level ${existingSubmission.level}, rejecting level ${level}`);
       return res.json({
         success: false,
         message: `Team "${teamName}" has already completed Level ${existingSubmission.level} or higher.`,
@@ -76,10 +84,12 @@ export const handleSubmitPassword: RequestHandler = (req, res) => {
 
     // Update or create team submission
     if (existingSubmission) {
+      console.log(`Updating existing submission for ${teamName} from level ${existingSubmission.level} to ${level}`);
       existingSubmission.level = level;
       existingSubmission.timestamp = new Date();
       existingSubmission.password = password;
     } else {
+      console.log(`Creating new submission for ${teamName} at level ${level}`);
       teamSubmissions.push({
         teamName,
         level,
@@ -94,6 +104,9 @@ export const handleSubmitPassword: RequestHandler = (req, res) => {
         b.level - a.level || a.timestamp.getTime() - b.timestamp.getTime(),
     );
 
+    console.log("Updated team submissions count:", teamSubmissions.length);
+    console.log("Team submissions:", teamSubmissions.map(t => ({ name: t.teamName, level: t.level })));
+
     const messages = [
       "Password accepted! Great work cracking the shell!",
       "Level unlocked! You're getting closer to the treasure!",
@@ -102,13 +115,19 @@ export const handleSubmitPassword: RequestHandler = (req, res) => {
       "Breakthrough achieved! Keep pushing forward!",
     ];
 
-    res.json({
+    const response = {
       success: true,
       level,
       message: `${messages[Math.floor(Math.random() * messages.length)]} Level ${level} completed.`,
-    });
+    };
+
+    console.log("Sending success response:", response);
+    res.json(response);
   } catch (error) {
+    console.error("=== PASSWORD SUBMISSION ERROR ===");
+
     if (error instanceof z.ZodError) {
+      console.error("Validation error:", error.errors);
       return res.status(400).json({
         success: false,
         message: "Invalid input. Please check your team name and password.",
