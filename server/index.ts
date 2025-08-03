@@ -2,7 +2,7 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import { handleDemo } from "./routes/demo";
-import { handleSubmitPassword, getTeamProgress } from "./routes/submit-password";
+import { handleSubmitPassword, getTeamProgress, resetProgress } from "./routes/submit-password";
 
 export function createServer() {
   const app = express();
