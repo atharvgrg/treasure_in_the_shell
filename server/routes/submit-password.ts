@@ -159,22 +159,21 @@ export const submitFeedback: RequestHandler = (req, res) => {
       });
     }
 
-    // Check if team already submitted feedback
+    // Check if this exact team+level feedback already exists
     const existingFeedback = teamFeedbacks.find(
-      (f) => f.teamName.toLowerCase() === teamName.toLowerCase(),
+      (f) => f.teamName.toLowerCase() === teamName.toLowerCase() && f.level === level
     );
 
     if (existingFeedback) {
       console.log(`${teamName} updated feedback: ${rating}/5 stars for level ${level}`);
-      // Update existing feedback
-      existingFeedback.level = level;
+      // Update existing feedback for same level
       existingFeedback.rating = rating;
       existingFeedback.comments = comments;
       existingFeedback.timestamp = new Date();
       existingFeedback.password = password;
     } else {
-      console.log(`${teamName} submitted feedback: ${rating}/5 stars for level ${level}`);
-      // Create new feedback
+      console.log(`${teamName} submitted NEW feedback: ${rating}/5 stars for level ${level}`);
+      // Create new feedback entry
       teamFeedbacks.push({
         teamName,
         level,
