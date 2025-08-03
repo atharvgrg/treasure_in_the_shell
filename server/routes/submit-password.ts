@@ -62,27 +62,17 @@ export const handleSubmitPassword: RequestHandler = (req, res) => {
       });
     }
 
-    // Check if team already submitted this level or higher
+    // Check if this exact team+level combination already exists
     const existingSubmission = teamSubmissions.find(
-      (s) => s.teamName.toLowerCase() === teamName.toLowerCase(),
+      (s) => s.teamName.toLowerCase() === teamName.toLowerCase() && s.level === level
     );
 
-    if (existingSubmission && existingSubmission.level >= level) {
-      console.log(`Team ${teamName} attempted level ${level} but already has level ${existingSubmission.level}`);
-      return res.json({
-        success: false,
-        message: `Team "${teamName}" has already completed Level ${existingSubmission.level} or higher.`,
-      });
-    }
-
-    // Update or create team submission
     if (existingSubmission) {
-      console.log(`${teamName} advanced from level ${existingSubmission.level} to ${level}`);
-      existingSubmission.level = level;
+      console.log(`Team ${teamName} already submitted level ${level}, updating timestamp`);
       existingSubmission.timestamp = new Date();
       existingSubmission.password = password;
     } else {
-      console.log(`New team ${teamName} completed level ${level}`);
+      console.log(`Team ${teamName} completed level ${level} - adding new entry`);
       teamSubmissions.push({
         teamName,
         level,
