@@ -9,8 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Textarea } from "@/components/ui/textarea";
-import { Terminal, Clock, Calendar, MapPin, Users, Trophy, Star, MessageSquare } from "lucide-react";
+import { Terminal, Clock, Calendar, MapPin, Users, Trophy, Star } from "lucide-react";
 
 export default function Index() {
   const [teamName, setTeamName] = useState("");
@@ -152,7 +151,7 @@ export default function Index() {
             TREASURE IN THE SHELL
           </h1>
           <p className="text-sm sm:text-lg lg:text-2xl font-mono text-muted-foreground mb-4 sm:mb-6 px-2 leading-relaxed">
-            CRACK THE CLUES • BREAK THE SHELL • CLAIM THE ROOT 💎🧑‍💻
+            CRACK THE CLUES �� BREAK THE SHELL • CLAIM THE ROOT 💎🧑‍💻
           </p>
           <div className="flex flex-wrap justify-center gap-2 sm:gap-4 mb-6 sm:mb-8">
             <div className="flex items-center gap-1 sm:gap-2 bg-card border border-border rounded-lg px-2 sm:px-4 py-1.5 sm:py-2">
