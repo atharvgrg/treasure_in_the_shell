@@ -262,7 +262,7 @@ export default function Admin() {
                     </AlertDialogTitle>
                     <AlertDialogDescription className="font-mono">
                       This action will permanently delete all team progress
-                      data.
+                      data and feedback.
                       <br />
                       <strong className="text-destructive">
                         This cannot be undone.
@@ -271,20 +271,36 @@ export default function Admin() {
                       <br />
                       Teams affected: {progressData.length}
                       <br />
+                      Feedback entries: {feedbackData.length}
+                      <br />
                       Total progress lost:{" "}
                       {progressData.reduce(
                         (acc, team) => acc + team.level,
                         0,
                       )}{" "}
                       levels
+                      <br />
+                      <br />
+                      <strong>Enter admin password to confirm:</strong>
                     </AlertDialogDescription>
+                    <Input
+                      type="password"
+                      placeholder="Enter admin password"
+                      value={resetPassword}
+                      onChange={(e) => setResetPassword(e.target.value)}
+                      className="font-mono"
+                    />
                   </AlertDialogHeader>
                   <AlertDialogFooter>
-                    <AlertDialogCancel className="font-mono">
+                    <AlertDialogCancel
+                      className="font-mono"
+                      onClick={() => setResetPassword("")}
+                    >
                       Cancel
                     </AlertDialogCancel>
                     <AlertDialogAction
                       onClick={handleReset}
+                      disabled={!resetPassword.trim()}
                       className="bg-destructive hover:bg-destructive/90 font-mono"
                     >
                       Yes, Reset Everything
