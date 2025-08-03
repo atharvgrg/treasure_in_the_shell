@@ -9,7 +9,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Terminal, Clock, Calendar, MapPin, Users, Trophy } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { Terminal, Clock, Calendar, MapPin, Users, Trophy, Star, MessageSquare } from "lucide-react";
 
 export default function Index() {
   const [teamName, setTeamName] = useState("");
