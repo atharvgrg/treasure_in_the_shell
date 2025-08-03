@@ -110,6 +110,11 @@ export default function Admin() {
   };
 
   const handleReset = async () => {
+    if (resetPassword !== "GDGOC-IET") {
+      alert("Incorrect password. Access denied.");
+      return;
+    }
+
     setIsResetting(true);
     try {
       const response = await fetch("/api/reset-progress", {
@@ -127,6 +132,7 @@ export default function Admin() {
         setProgressData([]);
         setFeedbackData([]);
         setLastUpdated(new Date());
+        setResetPassword(""); // Clear password after successful reset
       }
     } catch (error) {
       console.error("Failed to reset progress:", error);
