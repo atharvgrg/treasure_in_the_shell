@@ -361,7 +361,30 @@ export default function Admin() {
               LIVE: {progressData.length} submissions • {feedbackData.length} feedback entries
             </span>
           </div>
+          <button
+            onClick={() => setShowDebug(!showDebug)}
+            className="text-xs text-muted-foreground hover:text-foreground ml-4"
+          >
+            {showDebug ? 'Hide' : 'Show'} Debug
+          </button>
         </div>
+
+        {/* Debug Panel */}
+        {showDebug && (
+          <Card className="mb-6 bg-muted/20 border-muted">
+            <CardHeader>
+              <CardTitle className="text-sm text-muted-foreground">Debug Information</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-xs font-mono space-y-2">
+                <div>Last fetch: {lastUpdated?.toISOString() || 'Never'}</div>
+                <div>Auto-refresh: Every 5 seconds</div>
+                <div>Progress data: {JSON.stringify(progressData.map(p => ({ team: p.teamName, level: p.level })), null, 2)}</div>
+                <div>Feedback data: {JSON.stringify(feedbackData.map(f => ({ team: f.teamName, level: f.level, rating: f.rating })), null, 2)}</div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Tab Navigation */}
         <div className="flex justify-center mb-6">
