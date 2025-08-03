@@ -203,6 +203,15 @@ export const submitFeedback: RequestHandler = (req, res) => {
     // Sort by timestamp descending
     teamFeedbacks.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
 
+    console.log(`Total feedbacks after: ${teamFeedbacks.length}`);
+    console.log(`All current feedbacks:`, teamFeedbacks.map(f => ({
+      team: f.teamName,
+      level: f.level,
+      rating: f.rating,
+      time: f.timestamp.toISOString()
+    })));
+    console.log(`=== FEEDBACK SUBMISSION END ===\n`);
+
     res.json({
       success: true,
       message: "Thank you for your feedback! Your input helps us improve the event.",
