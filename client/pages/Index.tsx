@@ -53,49 +53,55 @@ export default function Index() {
 
       {/* Header */}
       <header className="relative z-10 border-b border-border/20 bg-card/50 backdrop-blur-sm">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Terminal className="h-8 w-8 text-primary animate-pulse" />
-            <span className="text-xl font-mono font-bold text-primary">TREASURE_IN_THE_SHELL</span>
+        <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4 flex items-center justify-between">
+          <div className="flex items-center gap-1 sm:gap-2">
+            <Terminal className="h-6 w-6 sm:h-8 sm:w-8 text-primary animate-pulse" />
+            <span className="text-sm sm:text-lg lg:text-xl font-mono font-bold text-primary hidden xs:block">
+              TREASURE_IN_THE_SHELL
+            </span>
+            <span className="text-xs font-mono font-bold text-primary block xs:hidden">
+              TREASURE
+            </span>
           </div>
-          <Badge variant="outline" className="text-primary border-primary">
-            <Users className="h-3 w-3 mr-1" />
-            Live Event
+          <Badge variant="outline" className="text-primary border-primary text-xs sm:text-sm px-1 sm:px-2">
+            <Users className="h-2 w-2 sm:h-3 sm:w-3 mr-1" />
+            <span className="hidden sm:inline">Live Event</span>
+            <span className="sm:hidden">Live</span>
           </Badge>
         </div>
       </header>
 
-      <main className="relative z-10 container mx-auto px-4 py-8">
+      <main className="relative z-10 container mx-auto px-3 sm:px-4 py-4 sm:py-8">
         {/* Hero Section */}
-        <div className="text-center mb-12">
-          <h1 className="text-6xl font-bold mb-4 bg-gradient-to-r from-primary via-terminal-400 to-primary bg-clip-text text-transparent">
+        <div className="text-center mb-8 sm:mb-12">
+          <h1 className="text-2xl sm:text-4xl lg:text-6xl font-bold mb-3 sm:mb-4 bg-gradient-to-r from-primary via-terminal-400 to-primary bg-clip-text text-transparent leading-tight">
             TREASURE IN THE SHELL
           </h1>
-          <p className="text-2xl font-mono text-muted-foreground mb-6">
+          <p className="text-sm sm:text-lg lg:text-2xl font-mono text-muted-foreground mb-4 sm:mb-6 px-2 leading-relaxed">
             CRACK THE CLUES • BREAK THE SHELL • CLAIM THE ROOT 💎🧑‍💻
           </p>
-          <div className="flex flex-wrap justify-center gap-4 mb-8">
-            <div className="flex items-center gap-2 bg-card border border-border rounded-lg px-4 py-2">
-              <Clock className="h-4 w-4 text-primary" />
-              <span className="text-sm font-mono">02:00 PM</span>
+          <div className="flex flex-wrap justify-center gap-2 sm:gap-4 mb-6 sm:mb-8">
+            <div className="flex items-center gap-1 sm:gap-2 bg-card border border-border rounded-lg px-2 sm:px-4 py-1.5 sm:py-2">
+              <Clock className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
+              <span className="text-xs sm:text-sm font-mono">02:00 PM</span>
             </div>
-            <div className="flex items-center gap-2 bg-card border border-border rounded-lg px-4 py-2">
-              <Calendar className="h-4 w-4 text-primary" />
-              <span className="text-sm font-mono">06 August 2025</span>
+            <div className="flex items-center gap-1 sm:gap-2 bg-card border border-border rounded-lg px-2 sm:px-4 py-1.5 sm:py-2">
+              <Calendar className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
+              <span className="text-xs sm:text-sm font-mono">06 Aug 2025</span>
             </div>
-            <div className="flex items-center gap-2 bg-card border border-border rounded-lg px-4 py-2">
-              <MapPin className="h-4 w-4 text-primary" />
-              <span className="text-sm font-mono">301 M Block</span>
+            <div className="flex items-center gap-1 sm:gap-2 bg-card border border-border rounded-lg px-2 sm:px-4 py-1.5 sm:py-2">
+              <MapPin className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
+              <span className="text-xs sm:text-sm font-mono">301 M Block</span>
             </div>
           </div>
-          <Badge variant="secondary" className="text-lg px-4 py-2 font-mono">
-            <Terminal className="h-4 w-4 mr-2" />
+          <Badge variant="secondary" className="text-sm sm:text-lg px-3 sm:px-4 py-1.5 sm:py-2 font-mono">
+            <Terminal className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
             A Terminal Puzzle Challenge 🧠
           </Badge>
         </div>
 
         {/* Main Content Grid */}
-        <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+        <div className="grid lg:grid-cols-2 gap-4 sm:gap-8 max-w-6xl mx-auto">
           {/* Submission Form */}
           <Card className="border-2 border-primary/20 bg-card/50 backdrop-blur-sm">
             <CardHeader>
@@ -119,7 +125,7 @@ export default function Index() {
                     value={teamName}
                     onChange={(e) => setTeamName(e.target.value)}
                     placeholder="Enter your team name"
-                    className="font-mono bg-input/50 border-border focus:border-primary"
+                    className="font-mono bg-input/50 border-border focus:border-primary text-base h-12"
                     required
                   />
                 </div>
@@ -133,14 +139,14 @@ export default function Index() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Paste your level password here"
-                    className="font-mono bg-input/50 border-border focus:border-primary"
+                    className="font-mono bg-input/50 border-border focus:border-primary text-base h-12"
                     required
                   />
                 </div>
-                <Button 
-                  type="submit" 
+                <Button
+                  type="submit"
                   disabled={isSubmitting || !teamName.trim() || !password.trim()}
-                  className="w-full font-mono bg-primary hover:bg-primary/90"
+                  className="w-full font-mono bg-primary hover:bg-primary/90 h-12 text-base"
                 >
                   {isSubmitting ? 'SUBMITTING...' : 'SUBMIT PROGRESS'}
                 </Button>
@@ -185,9 +191,9 @@ export default function Index() {
               
               <div className="space-y-2">
                 <h3 className="font-mono font-semibold text-primary">Level System:</h3>
-                <div className="grid grid-cols-5 gap-2">
+                <div className="grid grid-cols-5 sm:grid-cols-10 gap-1 sm:gap-2">
                   {Array.from({ length: 10 }, (_, i) => (
-                    <div key={i} className="flex items-center justify-center w-10 h-10 rounded border border-border bg-muted/30 text-xs font-mono">
+                    <div key={i} className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded border border-border bg-muted/30 text-xs font-mono">
                       {i + 1}
                     </div>
                   ))}
@@ -207,11 +213,12 @@ export default function Index() {
         </div>
 
         {/* Footer */}
-        <footer className="mt-16 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-card/30 rounded-lg border border-border">
-            <Terminal className="h-4 w-4 text-primary animate-pulse" />
-            <span className="font-mono text-sm text-muted-foreground">
-              root@treasure:~$ ./start_challenge.sh
+        <footer className="mt-8 sm:mt-16 text-center">
+          <div className="inline-flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-1.5 sm:py-2 bg-card/30 rounded-lg border border-border">
+            <Terminal className="h-3 w-3 sm:h-4 sm:w-4 text-primary animate-pulse" />
+            <span className="font-mono text-xs sm:text-sm text-muted-foreground">
+              <span className="hidden sm:inline">root@treasure:~$ ./start_challenge.sh</span>
+              <span className="sm:hidden">./start_challenge.sh</span>
             </span>
           </div>
         </footer>
