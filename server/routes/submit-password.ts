@@ -53,15 +53,15 @@ interface TeamFeedback {
 }
 
 // FILE PATHS FOR PERSISTENT STORAGE
-const DATA_DIR = path.join(process.cwd(), '.treasure-data');
-const SUBMISSIONS_FILE = path.join(DATA_DIR, 'submissions.json');
-const FEEDBACK_FILE = path.join(DATA_DIR, 'feedback.json');
+const DATA_DIR = path.join(process.cwd(), ".treasure-data");
+const SUBMISSIONS_FILE = path.join(DATA_DIR, "submissions.json");
+const FEEDBACK_FILE = path.join(DATA_DIR, "feedback.json");
 
 // ENSURE DATA DIRECTORY EXISTS
 function ensureDataDir() {
   if (!fs.existsSync(DATA_DIR)) {
     fs.mkdirSync(DATA_DIR, { recursive: true });
-    console.log('📁 Created data directory:', DATA_DIR);
+    console.log("📁 Created data directory:", DATA_DIR);
   }
 }
 
@@ -70,15 +70,15 @@ function loadSubmissions(): TeamSubmission[] {
   try {
     ensureDataDir();
     if (fs.existsSync(SUBMISSIONS_FILE)) {
-      const data = fs.readFileSync(SUBMISSIONS_FILE, 'utf8');
+      const data = fs.readFileSync(SUBMISSIONS_FILE, "utf8");
       const submissions = JSON.parse(data) as TeamSubmission[];
       console.log(`📂 LOADED ${submissions.length} submissions from file`);
       return submissions;
     }
   } catch (error) {
-    console.error('❌ Error loading submissions:', error);
+    console.error("❌ Error loading submissions:", error);
   }
-  console.log('📂 No existing submissions file, starting fresh');
+  console.log("📂 No existing submissions file, starting fresh");
   return [];
 }
 
@@ -88,7 +88,7 @@ function saveSubmissions(submissions: TeamSubmission[]) {
     fs.writeFileSync(SUBMISSIONS_FILE, JSON.stringify(submissions, null, 2));
     console.log(`💾 SAVED ${submissions.length} submissions to file`);
   } catch (error) {
-    console.error('❌ Error saving submissions:', error);
+    console.error("❌ Error saving submissions:", error);
     throw error;
   }
 }
@@ -97,15 +97,15 @@ function loadFeedback(): TeamFeedback[] {
   try {
     ensureDataDir();
     if (fs.existsSync(FEEDBACK_FILE)) {
-      const data = fs.readFileSync(FEEDBACK_FILE, 'utf8');
+      const data = fs.readFileSync(FEEDBACK_FILE, "utf8");
       const feedback = JSON.parse(data) as TeamFeedback[];
       console.log(`📂 LOADED ${feedback.length} feedback entries from file`);
       return feedback;
     }
   } catch (error) {
-    console.error('❌ Error loading feedback:', error);
+    console.error("❌ Error loading feedback:", error);
   }
-  console.log('📂 No existing feedback file, starting fresh');
+  console.log("📂 No existing feedback file, starting fresh");
   return [];
 }
 
@@ -115,32 +115,33 @@ function saveFeedback(feedback: TeamFeedback[]) {
     fs.writeFileSync(FEEDBACK_FILE, JSON.stringify(feedback, null, 2));
     console.log(`💾 SAVED ${feedback.length} feedback entries to file`);
   } catch (error) {
-    console.error('❌ Error saving feedback:', error);
+    console.error("❌ Error saving feedback:", error);
     throw error;
   }
 }
 
 export const handleSubmitPassword: RequestHandler = (req, res) => {
   console.log(`\n🚀 NEW SUBMISSION ATTEMPT`);
-  
+
   try {
     const { teamName, password } = submitPasswordSchema.parse(req.body);
     console.log(`👤 Team: ${teamName}`);
     console.log(`🔑 Password: ${password.substring(0, 8)}...`);
-    
+
     // VALIDATE PASSWORD
     const level = getPasswordLevel(password);
     if (!level) {
       console.log(`❌ INVALID PASSWORD from ${teamName}`);
       return res.json({
         success: false,
-        message: "Invalid password. Please check your submission and try again.",
+        message:
+          "Invalid password. Please check your submission and try again.",
       });
     }
 
     // LOAD EXISTING DATA
     const submissions = loadSubmissions();
-    
+
     // CREATE UNIQUE SUBMISSION
     const submissionId = `${teamName}_${level}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const newSubmission: TeamSubmission = {
@@ -150,20 +151,28 @@ export const handleSubmitPassword: RequestHandler = (req, res) => {
       timestamp: new Date().toISOString(),
       password,
     };
-    
+
     // ADD TO ARRAY
     submissions.push(newSubmission);
-    
+
     // SORT BY NEWEST FIRST
-    submissions.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
-    
+    submissions.sort(
+      (a, b) =>
+        new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
+    );
+
     // SAVE TO FILE
     saveSubmissions(submissions);
-    
-    console.log(`✅ STORED: ${teamName} → Level ${level} (ID: ${submissionId})`);
+
+    console.log(
+      `✅ STORED: ${teamName} → Level ${level} (ID: ${submissionId})`,
+    );
     console.log(`📊 TOTAL ENTRIES: ${submissions.length}`);
-    console.log(`📝 ALL TEAMS:`, submissions.map(s => `${s.teamName}(L${s.level})`).join(", "));
-    
+    console.log(
+      `📝 ALL TEAMS:`,
+      submissions.map((s) => `${s.teamName}(L${s.level})`).join(", "),
+    );
+
     const successMessages = [
       "Password accepted! Great work cracking the shell!",
       "Level unlocked! You're getting closer to the treasure!",
@@ -181,7 +190,7 @@ export const handleSubmitPassword: RequestHandler = (req, res) => {
     });
   } catch (error) {
     console.error("❌ SUBMISSION ERROR:", error);
-    
+
     if (error instanceof z.ZodError) {
       return res.status(400).json({
         success: false,
@@ -198,12 +207,12 @@ export const handleSubmitPassword: RequestHandler = (req, res) => {
 
 export const getTeamProgress: RequestHandler = (req, res) => {
   console.log(`\n📊 PROGRESS REQUEST`);
-  
+
   try {
     // ALWAYS LOAD FRESH DATA FROM FILE
     const submissions = loadSubmissions();
     console.log(`📈 Total stored entries: ${submissions.length}`);
-    
+
     const progressData = submissions.map((submission) => ({
       id: submission.id,
       teamName: submission.teamName,
@@ -213,7 +222,10 @@ export const getTeamProgress: RequestHandler = (req, res) => {
     }));
 
     console.log(`📤 SENDING ${progressData.length} entries to client`);
-    console.log(`📋 ENTRIES:`, progressData.map(p => `${p.teamName}-L${p.level}`).join(", "));
+    console.log(
+      `📋 ENTRIES:`,
+      progressData.map((p) => `${p.teamName}-L${p.level}`).join(", "),
+    );
 
     res.json({
       success: true,
@@ -233,11 +245,13 @@ export const getTeamProgress: RequestHandler = (req, res) => {
 
 export const submitFeedback: RequestHandler = (req, res) => {
   console.log(`\n⭐ NEW FEEDBACK ATTEMPT`);
-  
+
   try {
-    const { teamName, password, rating, comments } = submitFeedbackSchema.parse(req.body);
+    const { teamName, password, rating, comments } = submitFeedbackSchema.parse(
+      req.body,
+    );
     console.log(`👤 Team: ${teamName}, ⭐ Rating: ${rating}`);
-    
+
     const level = getPasswordLevel(password);
     if (!level) {
       console.log(`❌ INVALID FEEDBACK PASSWORD from ${teamName}`);
@@ -249,7 +263,7 @@ export const submitFeedback: RequestHandler = (req, res) => {
 
     // LOAD EXISTING FEEDBACK
     const feedback = loadFeedback();
-    
+
     // CREATE UNIQUE FEEDBACK
     const feedbackId = `${teamName}_${level}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const newFeedback: TeamFeedback = {
@@ -261,26 +275,32 @@ export const submitFeedback: RequestHandler = (req, res) => {
       timestamp: new Date().toISOString(),
       password,
     };
-    
+
     // ADD TO ARRAY
     feedback.push(newFeedback);
-    feedback.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
-    
+    feedback.sort(
+      (a, b) =>
+        new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
+    );
+
     // SAVE TO FILE
     saveFeedback(feedback);
-    
-    console.log(`✅ FEEDBACK STORED: ${teamName} → ${rating}/5 stars for Level ${level} (ID: ${feedbackId})`);
+
+    console.log(
+      `✅ FEEDBACK STORED: ${teamName} → ${rating}/5 stars for Level ${level} (ID: ${feedbackId})`,
+    );
     console.log(`📊 TOTAL FEEDBACK: ${feedback.length}`);
 
     res.json({
       success: true,
       feedbackId,
       totalFeedback: feedback.length,
-      message: "Thank you for your feedback! Your input helps us improve the event.",
+      message:
+        "Thank you for your feedback! Your input helps us improve the event.",
     });
   } catch (error) {
     console.error("❌ FEEDBACK ERROR:", error);
-    
+
     if (error instanceof z.ZodError) {
       return res.status(400).json({
         success: false,
@@ -297,12 +317,12 @@ export const submitFeedback: RequestHandler = (req, res) => {
 
 export const getFeedback: RequestHandler = (req, res) => {
   console.log(`\n📊 FEEDBACK REQUEST`);
-  
+
   try {
     // ALWAYS LOAD FRESH DATA FROM FILE
     const feedback = loadFeedback();
     console.log(`📈 Total feedback entries: ${feedback.length}`);
-    
+
     const feedbackData = feedback.map((item) => ({
       id: item.id,
       teamName: item.teamName,
@@ -335,13 +355,13 @@ export const getDataStatus: RequestHandler = (req, res) => {
   try {
     const submissions = loadSubmissions();
     const feedback = loadFeedback();
-    
+
     const status = {
       submissions: {
         count: submissions.length,
         fileExists: fs.existsSync(SUBMISSIONS_FILE),
         filePath: SUBMISSIONS_FILE,
-        data: submissions.map(s => ({
+        data: submissions.map((s) => ({
           id: s.id,
           teamName: s.teamName,
           level: s.level,
@@ -352,7 +372,7 @@ export const getDataStatus: RequestHandler = (req, res) => {
         count: feedback.length,
         fileExists: fs.existsSync(FEEDBACK_FILE),
         filePath: FEEDBACK_FILE,
-        data: feedback.map(f => ({
+        data: feedback.map((f) => ({
           id: f.id,
           teamName: f.teamName,
           level: f.level,
@@ -362,16 +382,16 @@ export const getDataStatus: RequestHandler = (req, res) => {
       },
       serverTime: new Date().toISOString(),
     };
-    
+
     console.log("📊 DATA STATUS:", {
       submissions: status.submissions.count,
       feedback: status.feedbacks.count,
       files: {
         submissions: status.submissions.fileExists,
         feedback: status.feedbacks.fileExists,
-      }
+      },
     });
-    
+
     res.json(status);
   } catch (error) {
     console.error("❌ STATUS ERROR:", error);
@@ -383,10 +403,10 @@ export const resetProgress: RequestHandler = (req, res) => {
   try {
     const submissions = loadSubmissions();
     const feedback = loadFeedback();
-    
+
     const beforeSubmissions = submissions.length;
     const beforeFeedbacks = feedback.length;
-    
+
     // DELETE FILES
     if (fs.existsSync(SUBMISSIONS_FILE)) {
       fs.unlinkSync(SUBMISSIONS_FILE);
@@ -395,7 +415,9 @@ export const resetProgress: RequestHandler = (req, res) => {
       fs.unlinkSync(FEEDBACK_FILE);
     }
 
-    console.log(`🗑️ RESET: Deleted ${beforeSubmissions} submissions and ${beforeFeedbacks} feedbacks`);
+    console.log(
+      `🗑️ RESET: Deleted ${beforeSubmissions} submissions and ${beforeFeedbacks} feedbacks`,
+    );
     console.log(`🗑️ Files deleted: ${SUBMISSIONS_FILE}, ${FEEDBACK_FILE}`);
 
     res.json({
