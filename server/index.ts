@@ -19,6 +19,8 @@ export function createServer() {
   });
 
   app.get("/api/demo", handleDemo);
+  app.post("/api/submit-password", handleSubmitPassword);
+  app.get("/api/team-progress", getTeamProgress);
 
   return app;
 }
