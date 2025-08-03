@@ -34,10 +34,8 @@ export default function Index() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted with:", { teamName: teamName.trim(), password: password.trim(), rating });
 
     if (!teamName.trim() || !password.trim()) {
-      console.error("Missing required fields");
       return;
     }
 
@@ -45,8 +43,6 @@ export default function Index() {
     setSubmission(null); // Clear previous submission status
 
     try {
-      console.log("Submitting progress to /api/submit-password");
-
       // Submit progress
       const progressResponse = await fetch("/api/submit-password", {
         method: "POST",
@@ -57,47 +53,39 @@ export default function Index() {
         }),
       });
 
-      console.log("Progress response status:", progressResponse.status);
-
       if (!progressResponse.ok) {
         const errorText = await progressResponse.text();
-        console.error("Progress submission failed:", errorText);
-        throw new Error(`HTTP error! status: ${progressResponse.status}, response: ${errorText}`);
+        throw new Error(`HTTP error! status: ${progressResponse.status}`);
       }
 
       const progressResult = await progressResponse.json();
-      console.log("Progress result:", progressResult);
 
       // Submit feedback if rating is provided
       if (rating > 0 && progressResult.success) {
-        console.log("Submitting feedback to /api/submit-feedback");
+        try {
+          const feedbackResponse = await fetch("/api/submit-feedback", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              teamName: teamName.trim(),
+              password: password.trim(),
+              rating: rating,
+              comments: "",
+            }),
+          });
 
-        const feedbackResponse = await fetch("/api/submit-feedback", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            teamName: teamName.trim(),
-            password: password.trim(),
-            rating: rating,
-            comments: "",
-          }),
-        });
-
-        console.log("Feedback response status:", feedbackResponse.status);
-
-        if (!feedbackResponse.ok) {
-          const feedbackError = await feedbackResponse.text();
-          console.warn("Feedback submission failed:", feedbackError);
-        } else {
-          const feedbackResult = await feedbackResponse.json();
-          console.log("Feedback result:", feedbackResult);
+          if (!feedbackResponse.ok) {
+            console.warn("Feedback submission failed, but continuing with progress submission");
+          }
+        } catch (feedbackError) {
+          console.warn("Feedback submission error:", feedbackError);
+          // Don't fail the whole submission if feedback fails
         }
       }
 
       setSubmission(progressResult);
 
       if (progressResult.success) {
-        console.log("Submission successful, clearing form");
         setPassword("");
         setRating(0);
       }
@@ -105,7 +93,7 @@ export default function Index() {
       console.error("Submission error:", error);
       setSubmission({
         success: false,
-        message: `Submission failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        message: "Connection error. Please check your internet connection and try again.",
       });
     } finally {
       setIsSubmitting(false);
@@ -187,7 +175,7 @@ export default function Index() {
             TREASURE IN THE SHELL
           </h1>
           <p className="text-sm sm:text-lg lg:text-2xl font-mono text-muted-foreground mb-4 sm:mb-6 px-2 leading-relaxed">
-            CRACK THE CLUES �� BREAK THE SHELL • CLAIM THE ROOT 💎🧑‍💻
+            CRACK THE CLUES �� BREAK THE SHELL • CLAIM THE ROOT 💎🧑‍���
           </p>
           <div className="flex flex-wrap justify-center gap-2 sm:gap-4 mb-6 sm:mb-8">
             <div className="flex items-center gap-1 sm:gap-2 bg-card border border-border rounded-lg px-2 sm:px-4 py-1.5 sm:py-2">
