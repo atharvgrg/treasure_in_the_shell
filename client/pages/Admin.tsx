@@ -68,24 +68,39 @@ export default function Admin() {
   const fetchProgress = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch("/api/team-progress");
+      const [progressResponse, feedbackResponse] = await Promise.all([
+        fetch("/api/team-progress"),
+        fetch("/api/feedback")
+      ]);
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      if (!progressResponse.ok || !feedbackResponse.ok) {
+        throw new Error(`HTTP error! status: ${progressResponse.status} or ${feedbackResponse.status}`);
       }
 
-      const data: ProgressData = await response.json();
+      const [progressData, feedbackData] = await Promise.all([
+        progressResponse.json() as Promise<ProgressData>,
+        feedbackResponse.json() as Promise<FeedbackData>
+      ]);
 
-      if (data.success) {
-        const teamsWithDates = data.teams.map((team) => ({
+      if (progressData.success) {
+        const teamsWithDates = progressData.teams.map((team) => ({
           ...team,
           timestamp: new Date(team.timestamp),
         }));
         setProgressData(teamsWithDates);
-        setLastUpdated(new Date());
       }
+
+      if (feedbackData.success) {
+        const feedbacksWithDates = feedbackData.feedbacks.map((feedback) => ({
+          ...feedback,
+          timestamp: new Date(feedback.timestamp),
+        }));
+        setFeedbackData(feedbacksWithDates);
+      }
+
+      setLastUpdated(new Date());
     } catch (error) {
-      console.error("Failed to fetch progress:", error);
+      console.error("Failed to fetch data:", error);
     } finally {
       setIsLoading(false);
     }
