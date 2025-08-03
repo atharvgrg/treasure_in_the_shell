@@ -28,7 +28,7 @@ const PASSWORDS = [
 ];
 
 function getPasswordLevel(password: string): number | null {
-  const found = PASSWORDS.find(p => p.pass === password);
+  const found = PASSWORDS.find((p) => p.pass === password);
   return found ? found.level : null;
 }
 
@@ -56,19 +56,20 @@ let teamFeedbacks: TeamFeedback[] = [];
 
 export const handleSubmitPassword: RequestHandler = (req, res) => {
   console.log(`\n🚀 NEW SUBMISSION ATTEMPT`);
-  
+
   try {
     const { teamName, password } = submitPasswordSchema.parse(req.body);
     console.log(`👤 Team: ${teamName}`);
     console.log(`🔑 Password: ${password.substring(0, 8)}...`);
-    
+
     // VALIDATE PASSWORD
     const level = getPasswordLevel(password);
     if (!level) {
       console.log(`❌ INVALID PASSWORD from ${teamName}`);
       return res.json({
         success: false,
-        message: "Invalid password. Please check your submission and try again.",
+        message:
+          "Invalid password. Please check your submission and try again.",
       });
     }
 
@@ -81,17 +82,22 @@ export const handleSubmitPassword: RequestHandler = (req, res) => {
       timestamp: new Date(),
       password,
     };
-    
+
     // ALWAYS ADD - NEVER REPLACE
     teamSubmissions.push(newSubmission);
-    
+
     // SORT BY NEWEST FIRST
-    teamSubmissions.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
-    
+    teamSubmissions.sort(
+      (a, b) => b.timestamp.getTime() - a.timestamp.getTime(),
+    );
+
     console.log(`✅ STORED: ${teamName} → Level ${level}`);
     console.log(`📊 TOTAL ENTRIES: ${teamSubmissions.length}`);
-    console.log(`📝 ALL TEAMS:`, teamSubmissions.map(s => `${s.teamName}(L${s.level})`).join(", "));
-    
+    console.log(
+      `📝 ALL TEAMS:`,
+      teamSubmissions.map((s) => `${s.teamName}(L${s.level})`).join(", "),
+    );
+
     const successMessages = [
       "Password accepted! Great work cracking the shell!",
       "Level unlocked! You're getting closer to the treasure!",
@@ -108,7 +114,7 @@ export const handleSubmitPassword: RequestHandler = (req, res) => {
     });
   } catch (error) {
     console.error("❌ SUBMISSION ERROR:", error);
-    
+
     if (error instanceof z.ZodError) {
       return res.status(400).json({
         success: false,
@@ -126,7 +132,7 @@ export const handleSubmitPassword: RequestHandler = (req, res) => {
 export const getTeamProgress: RequestHandler = (req, res) => {
   console.log(`\n📊 PROGRESS REQUEST`);
   console.log(`📈 Total stored entries: ${teamSubmissions.length}`);
-  
+
   try {
     const progressData = teamSubmissions.map((submission) => ({
       id: submission.id,
@@ -137,7 +143,10 @@ export const getTeamProgress: RequestHandler = (req, res) => {
     }));
 
     console.log(`📤 SENDING ${progressData.length} entries to client`);
-    console.log(`📋 ENTRIES:`, progressData.map(p => `${p.teamName}-L${p.level}`).join(", "));
+    console.log(
+      `📋 ENTRIES:`,
+      progressData.map((p) => `${p.teamName}-L${p.level}`).join(", "),
+    );
 
     res.json({
       success: true,
@@ -156,11 +165,13 @@ export const getTeamProgress: RequestHandler = (req, res) => {
 
 export const submitFeedback: RequestHandler = (req, res) => {
   console.log(`\n⭐ NEW FEEDBACK ATTEMPT`);
-  
+
   try {
-    const { teamName, password, rating, comments } = submitFeedbackSchema.parse(req.body);
+    const { teamName, password, rating, comments } = submitFeedbackSchema.parse(
+      req.body,
+    );
     console.log(`👤 Team: ${teamName}, ⭐ Rating: ${rating}`);
-    
+
     const level = getPasswordLevel(password);
     if (!level) {
       console.log(`❌ INVALID FEEDBACK PASSWORD from ${teamName}`);
@@ -181,21 +192,24 @@ export const submitFeedback: RequestHandler = (req, res) => {
       timestamp: new Date(),
       password,
     };
-    
+
     teamFeedbacks.push(newFeedback);
     teamFeedbacks.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
-    
-    console.log(`✅ FEEDBACK STORED: ${teamName} → ${rating}/5 stars for Level ${level}`);
+
+    console.log(
+      `✅ FEEDBACK STORED: ${teamName} → ${rating}/5 stars for Level ${level}`,
+    );
     console.log(`📊 TOTAL FEEDBACK: ${teamFeedbacks.length}`);
 
     res.json({
       success: true,
       feedbackId,
-      message: "Thank you for your feedback! Your input helps us improve the event.",
+      message:
+        "Thank you for your feedback! Your input helps us improve the event.",
     });
   } catch (error) {
     console.error("❌ FEEDBACK ERROR:", error);
-    
+
     if (error instanceof z.ZodError) {
       return res.status(400).json({
         success: false,
@@ -213,7 +227,7 @@ export const submitFeedback: RequestHandler = (req, res) => {
 export const getFeedback: RequestHandler = (req, res) => {
   console.log(`\n📊 FEEDBACK REQUEST`);
   console.log(`📈 Total feedback entries: ${teamFeedbacks.length}`);
-  
+
   try {
     const feedbackData = teamFeedbacks.map((feedback) => ({
       id: feedback.id,
@@ -246,7 +260,7 @@ export const getDataStatus: RequestHandler = (req, res) => {
   const status = {
     submissions: {
       count: teamSubmissions.length,
-      data: teamSubmissions.map(s => ({
+      data: teamSubmissions.map((s) => ({
         id: s.id,
         teamName: s.teamName,
         level: s.level,
@@ -255,7 +269,7 @@ export const getDataStatus: RequestHandler = (req, res) => {
     },
     feedbacks: {
       count: teamFeedbacks.length,
-      data: teamFeedbacks.map(f => ({
+      data: teamFeedbacks.map((f) => ({
         id: f.id,
         teamName: f.teamName,
         level: f.level,
@@ -265,7 +279,7 @@ export const getDataStatus: RequestHandler = (req, res) => {
     },
     serverTime: new Date().toISOString(),
   };
-  
+
   console.log("📊 DATA STATUS:", status);
   res.json(status);
 };
@@ -274,11 +288,13 @@ export const resetProgress: RequestHandler = (req, res) => {
   try {
     const beforeSubmissions = teamSubmissions.length;
     const beforeFeedbacks = teamFeedbacks.length;
-    
+
     teamSubmissions.length = 0;
     teamFeedbacks.length = 0;
 
-    console.log(`🗑️ RESET: Deleted ${beforeSubmissions} submissions and ${beforeFeedbacks} feedbacks`);
+    console.log(
+      `🗑️ RESET: Deleted ${beforeSubmissions} submissions and ${beforeFeedbacks} feedbacks`,
+    );
 
     res.json({
       success: true,
