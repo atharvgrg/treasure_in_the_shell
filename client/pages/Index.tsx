@@ -445,7 +445,7 @@ export default function Index() {
         </div>
 
         {/* Footer */}
-        <footer className="mt-8 sm:mt-16 text-center">
+        <footer className="mt-12 sm:mt-16 text-center">
           <div className="inline-flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-1.5 sm:py-2 bg-card/30 rounded-lg border border-border">
             <Terminal className="h-3 w-3 sm:h-4 sm:w-4 text-primary animate-pulse" />
             <span className="font-mono text-xs sm:text-sm text-muted-foreground">
