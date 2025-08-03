@@ -29,6 +29,8 @@ import {
   Medal,
   Award,
   Trash2,
+  MessageSquare,
+  Star,
 } from "lucide-react";
 
 interface TeamProgress {
